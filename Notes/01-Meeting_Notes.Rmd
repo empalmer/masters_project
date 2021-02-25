@@ -1,5 +1,27 @@
 # Meeting Notes
 
+## Feb 25:
+
+ - Agenda:
+Talk about papers?
+
+ - Questions:
+Signing up for the class?
+
+ - Todo for week 9:
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Feb 18 Meeting:
@@ -14,14 +36,8 @@ GEE one
 Zhang 2018
 Zhang 2020
 
-
-
-
-
 Usually don't need to go though much of the simulation and application
-
 Focus on the modeling part.
-
 Think about model assumptions,
 
 
@@ -36,31 +52,17 @@ look for relevant papers about the above
 One or two papers per week.
 
 
-
 Delia did a preliminary study on this project
 
 Explore data to see if there is good
 Tom might have some longitudinal data
 
-Another collaboration with other longitudinal study
-might have some data.
-
-
-
+Another collaboration with other longitudinal study might have some data.
 
 
 When we meet next week, we can discuss the two papers i've read and thougths on models.
-
 Send quick
 
-
-
-
-
-
 In masters project might develop new model or use existing models on data.
-
-
-
 
 Yuan has idea, but doesnt want to share yet until i've done literature review
