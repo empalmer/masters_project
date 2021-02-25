@@ -1,0 +1,66 @@
+# Meeting Notes
+
+
+
+## Feb 18 Meeting:
+the GEE one model dependence  count data
+the Beta one
+
+
+
+FOCUS ON THESE PAPERS
+Bayesian one
+GEE one
+Zhang 2018
+Zhang 2020
+
+
+
+
+
+Usually don't need to go though much of the simulation and application
+
+Focus on the modeling part.
+
+Think about model assumptions,
+
+
+
+Chenyang used the GEE,
+analysis between microbe and other data, and with microbiome data as response and link to other data.
+
+For masters project:
+Integrated microbiome human project
+look at website for IMHP
+look for relevant papers about the above
+One or two papers per week.
+
+
+
+Delia did a preliminary study on this project
+
+Explore data to see if there is good
+Tom might have some longitudinal data
+
+Another collaboration with other longitudinal study
+might have some data.
+
+
+
+
+
+When we meet next week, we can discuss the two papers i've read and thougths on models.
+
+Send quick
+
+
+
+
+
+
+In masters project might develop new model or use existing models on data.
+
+
+
+
+Yuan has idea, but doesnt want to share yet until i've done literature review

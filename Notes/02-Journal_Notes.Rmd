@@ -1,0 +1,22 @@
+# Journal Notes
+
+## Week 8 
+
+### Chen 2020 [@chen2020]
+
+Generalized estimating equation modeling on correlated microbiome sequencing data with longitudinal measures
+
+### Bayesian variable selection for multivariate zero-inflated models: Application to microbiome count data [@lee2020]
+
+
+### Zhang 2018 [@zhang2018]
+
+Negative Binomial Mixed Models for Analyzing Longitudinal Microbiome Data [@zhang2018]
+
+Proposal:
+ - Negative binomial mixed models for longitudinal microbiome studies
+ - Handles over-dispersion and varying total reads.
+ - Accounts for dynamic trend and correlation among longitudinal samples.
+
+
+### Zhang 2020 [@zhang2020]
