@@ -1,0 +1,9 @@
+# iHMP
+cite [@integrative2014]
+
+https://www.hmpdacc.org/ihmp/
+
+3 Studies:
+ - Pregnancy
+ - IBS
+ - Type 2 Diabetes

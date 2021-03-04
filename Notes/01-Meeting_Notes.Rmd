@@ -1,5 +1,21 @@
 # Meeting Notes
 
+## Mar 3
+
+Questions:
+ - Sign up for masters project class?
+ - UW’s Summer Institutes Scholarship? Summer Institute in Statistical Genetics?
+
+
+Todo for week10:
+
+
+Notes:
+
+
+
+
+
 ## Feb 25:
 
  - Agenda:
@@ -9,10 +25,6 @@ Talk about papers?
 Signing up for the class?
 
  - Todo for week 9:
-
-
-
-
 
 assumption of common taxa interaction is a strong assu
 
@@ -36,7 +48,6 @@ Both things are changing over time
 Impose a smooth structure.
 
 
-
 Focus on how to model dependence part.
 
 Varying coefficient model - look up
@@ -52,10 +63,7 @@ longitudinal measurements for covariates and
 
 
 
-
-
 extend this model to multiomics integration
-
 
 Look up more papers about incorporating the phylogentic trees.
 Look at IMHP and try to narrow down data.
