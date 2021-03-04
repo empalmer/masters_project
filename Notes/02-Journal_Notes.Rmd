@@ -1,12 +1,54 @@
 # Journal Notes
 
-## Week 8 
+## Week 8
 
 ### Chen 2020 [@chen2020]
 
 Generalized estimating equation modeling on correlated microbiome sequencing data with longitudinal measures
 
-### Bayesian variable selection for multivariate zero-inflated models: Application to microbiome count data [@lee2020]
+Need to account for correlation structure(s)
+ - Taxonomic correlations
+ - Time dependency of longitudinal OTU measures
+
+
+Define level of taxon 1 as the first level which all OTUs share
+
+Correlation matrix of taxonomic structure:
+OTUs that belong to the same taxa at higher levels may have some correlation.
+
+Assume that many of the correlations are equal according to known taxonomic structure
+
+If OTUS belong to the same taxon at level $i$, then all pairwise correlations of OTUs within this cluster should be equal.
+
+Devine a taxonomic structure matrix $\Gamma$ to indicate which correlations are equal and which are not.
+
+Algorithm to find the entries of $\Gamma$
+
+
+
+
+
+Time dependency of longitudinal OTU measures
+Assume correlation structure within the same individual is pre-specified
+Correlation structure matrix within same individual is $\Omega_T$
+
+
+Sample correlation - perhaps repeated measures from same person
+
+Combine longitudinal and sample correlation - Integrative correlation matrix, $J \times J$ where $J = N \times L$, where $N$ is the dimension of the taxonomic correlation matrix and $L$ is the dimension of the time dependency
+
+
+
+
+
+
+
+
+
+
+
+
+## Bayesian variable selection for multivariate zero-inflated models: Application to microbiome count data [@lee2020]
 
 
 ### Zhang 2018 [@zhang2018]

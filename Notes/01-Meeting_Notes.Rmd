@@ -14,6 +14,55 @@ Signing up for the class?
 
 
 
+assumption of common taxa interaction is a strong assu
+
+Chenyang didnt model the taxonomic dependence
+
+
+
+
+Might need to involve Tom to talk about the phylogenic structre
+there might be some conjecture or assumption about this.
+
+
+Might use some sort of Distance to enhance the correlation structure
+
+
+
+measure relationship between otu
+
+Modelling the change of OTUs, the covariates also change over time.
+Both things are changing over time
+Impose a smooth structure.
+
+
+
+Focus on how to model dependence part.
+
+Varying coefficient model - look up
+coefficients a function of time. (can use non-paremetric or semi parametric - smooth function )
+
+
+
+pg 8
+
+
+look at IMHP data - what kind of measurements they have.
+longitudinal measurements for covariates and
+
+
+
+
+
+extend this model to multiomics integration
+
+
+Look up more papers about incorporating the phylogentic trees.
+Look at IMHP and try to narrow down data.
+
+
+
+
 
 
 
