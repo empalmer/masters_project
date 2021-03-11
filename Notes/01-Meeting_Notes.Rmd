@@ -1,5 +1,15 @@
 # Meeting Notes
 
+## Mar 12 
+
+Questions: 
+ - Code for masters project class? 
+ 
+ 
+
+
+
+
 ## Mar 3
 
 Questions:
@@ -29,9 +39,6 @@ Signing up for the class?
 assumption of common taxa interaction is a strong assu
 
 Chenyang didnt model the taxonomic dependence
-
-
-
 
 Might need to involve Tom to talk about the phylogenic structre
 there might be some conjecture or assumption about this.
