@@ -1,11 +1,52 @@
 # Meeting Notes
 
-## Mar 12 
 
-Questions: 
- - Code for masters project class? 
- 
- 
+
+
+
+## Week 1 - Mar 31
+
+
+Continue what i'm doing now, implement on real data
+
+
+
+Find phylogenetic information for all in twin structure
+
+Compositional nature of data? not included?
+
+
+
+
+
+Sequencing depth - can be different across data 
+
+
+**** Use a model on count data directly.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Mar 12
+
+Questions:
+ - Code for masters project class?
+
+
 
 
 
