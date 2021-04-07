@@ -1,5 +1,24 @@
 # Journal Notes
 
+## Week 2
+
+### Analysis of comparative data using generalized estimating equations
+Julien Claude, Emmanuel Paradis
+https://hal.ird.fr/ird-02063041/file/Paradis_Claude_2002_JTB.pdf
+
+Another paper that uses GEEs and phylogenetic information 
+Uses phylogentetic difference 
+
+function in ape 
+https://rdrr.io/cran/ape/man/compar.gee.html
+
+
+### Phylogenetic Logistic Regression for Binary Dependent Variables 
+https://academic.oup.com/sysbio/article/59/1/9/1723322
+
+
+
+
 ## Week 8
 
 ### Chen 2020 [@chen2020]
