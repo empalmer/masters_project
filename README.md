@@ -1,15 +1,16 @@
 # Masters Project at Oregon State University Spring 2021
 
-## Topic:
 
-My masters project research:
+### Overview
+Following [this paper](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008108), I am using a tree-based correlation structure and integrating with longitudinal correlation structure for microbiome data. Using generalized estimating equations for model fitting.
 
-Following this paper I presented last term that uses GEEs on tree based - correlated microbiome longitudinal measures
-
+### Current status:
 Working on getting the code working on a case study
-Apply to a more realistic dataset, this paper only has 9 outs, 2 repeated measures
 
-Also adjust taking into account sequencing depth, instead of using relative abundance
+### Goals:
+
+- Apply to larger dataset, the paper in the dataset only has 9 OTUs, 2 repeated measures
+- Also adjust taking into account sequencing depth, instead of using relative abundance
 
 ## About this repository
 
