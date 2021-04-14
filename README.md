@@ -15,7 +15,7 @@ Working on getting the code working on a case study
 ## About this repository
 
  - Data folder: Contains Twin data used in paper
- - GEE2020Chen: Local copy of code from https://github.com/chenbo4/GEE
+ - GEE_Chen2020: Local copy of code from https://github.com/chenbo4/GEE
  - R: Contains R code
  - Notes: Contains meeting notes, paper notes, etc
  - Presentations: Contains slides and other information from group Journal Club presentations
