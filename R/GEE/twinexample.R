@@ -3,6 +3,10 @@ library(readxl)
 twindata <- read_excel("Data/twindata.xls")
 
 
+# What is total read column? 
+colnames(twindata)
+rowSums(twindata[,10:23])
+
 
 # OTU correlation structure - KNOWN, shown in paper
 dim <- list(9,c(4,1,4))
@@ -19,7 +23,8 @@ dim(omega)
 
 
 # R matrix 9x4 is dim 36 - same as paper 
-R <- cor2zcor(1,dim,c(2,2),corstr="exchangeable",otustr="exchangeable")
+# should n be 54? 
+R <- cor2zcor(54,dim,c(2,2),corstr="exchangeable",otustr="exchangeable")
 dim(R[[2]])
 dim(R[[1]])
 
