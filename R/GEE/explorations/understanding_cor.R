@@ -138,3 +138,104 @@ get_cor <- function(n, # sample size? not sure what this means
     zcor = zcor[, colSums(zcor != 0) > 0]
     return(list(cor.matrix, zcor))
 }
+
+
+
+
+ar_test <- geeglm(
+    presence ~ obesity,
+    data = data0_sorted,
+    family = binomial("logit"),
+    id = family,
+    corstr = "ar1", 
+    waves = cor_id
+)
+summary(ar_test)
+
+# About zcor: 
+# Given a n_i x m matrix X_i of covariates, 
+# the upper diagonal correlations parameter r_i of the working 
+# correlation matrix R_i(alpha) can be written as r_i = X_i alpha 
+# 
+# The zcor argument takes the concatenated matrices (X1, ... , X_k) as the 
+# design matrix for the working correlation 
+
+
+# About missing data: 
+# In case of missing values, the GEE estimates are consistent if the values are missing com- pletely at random (Rubin 1976). The geeglm function assumes by default that observations are equally separated in time. Therefore, one has to inform the function about different sep- arations if there are missing values and other correlation structures than the independence or exchangeable structures are used.
+# The waves arguments takes an integer vector that indicates that two observations of the same cluster with the values of the vector of k respectively l have a correlation of rkl.
+
+
+# Some of the errors that occur
+#Error in geese.fit(xx, yy, id, offset, soffset, w, waves = waves, zsca,  : 
+#nrow(zcor) need to be equal sum(clusz * (clusz - 1) / 2) for unstructured or userdefined corstr.
+#clusz	- integer vector giving the number of observations in each cluster
+
+# some checks to see we have right dimensions... 
+clusz <- data0_sorted %>% 
+    group_by(family) %>% 
+    summarize(n = n())
+clusz2 <- na.omit(data0) %>% 
+    group_by(family) %>% 
+    summarize(n = n())
+clusz <- clusz$n
+clusz2 <- clusz2$n
+sum(clusz * (clusz - 1) / 2)
+sum(clusz2 * (clusz2 - 1) / 2)
+nrow(zcor)
+nrow(na.omit(data0))
+
+
+
+
+
+dim <- list(9,c(4,1,4))
+
+# Try with only 2 clusters 
+R <- cor2zcor(2,dim,c(2,2),corstr="exchangeable",otustr="exchangeable")
+
+r <- R[[1]]
+r
+R[[2]]
+
+# I dont think this fixed2Zcor will work... 
+family2 <- rep(1:2, each = 36)
+zcor_test <- fixed2Zcor(r, id = family2, waves = family2)
+zcor_test
+nrow(zcor_test)    
+
+
+
+
+# From cor2zcor code 
+zcor = matrix(nrow = n * choose(N * M, 2),
+              ncol = max(cor.matrix) - 1)
+
+
+# replace with a vector that contains the cluster length? 
+for (i in 1:15)) {
+    zcor[, i] = rep(as.numeric(r[lower.tri(r)] == i + 1), n)
+}
+zcor = zcor[, colSums(zcor != 0) > 0]
+
+
+rep(7:8, 2:3)
+
+
+
+
+dim=list(2)
+cor2zcor(1,dim,c(2),corstr="exchangeable",otustr="exchangeable")[[1]]
+cor2zcor(3,dim,c(2),corstr="exchangeable",otustr="exchangeable")[[2]]
+
+# When there are 2 clusters, and each cluster has 4 observations
+genZcor(clusz = c(4,4), waves = rep(1:4,2), corstrv = 4 )
+
+# When there are 2 clusters and the 1st has 4 observations and the 2nd has 3
+genZcor(clusz = c(4,3), waves = c(1,2,3,4,1,2,3), corstrv = 4 )
+
+
+
+
+
+

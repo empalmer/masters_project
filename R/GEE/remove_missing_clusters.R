@@ -82,7 +82,7 @@ data0_sorted <- data0 %>%
 
 
 ## Model 
-geeglm(
+mod_missing_removed <- geeglm(
     presence ~ obesity,
     data = data0_sorted,
     family = "binomial",
@@ -90,7 +90,9 @@ geeglm(
     corstr = "userdefined",
     zcor = zcor
 )
-id_var
+
+mod_missing_removed
+summary(mod_missing_removed)
 
 
 

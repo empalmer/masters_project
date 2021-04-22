@@ -143,6 +143,5 @@ cor2zcor = function(n,
 
 
 # example
-dim=list(6,c(3,3),c(2,1,3))
-cor2zcor(1,dim,c(2,2),corstr="exchangeable",otustr="exchangeable")[[1]]
-print(cor2zcor(1,dim,c(2,2),corstr="exchangeable",otustr="exchangeable")[[1]])
+#cor2zcor(1,dim = list(6,c(3,3),c(2,1,3)),2,corstr="exchangeable",otustr="exchangeable")[[1]]
+#cor2zcor(1,list(5,c(3,2)),2,corstr="exchangeable",otustr="exchangeable")[[1]]
