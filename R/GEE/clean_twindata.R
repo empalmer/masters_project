@@ -27,10 +27,9 @@ meta_vars <- c("HOST_SUBJECT_ID", "SAMPLEDATE", "ZYGOSITY",
 
 
 data_filter_otus <- twindata %>% 
-    select(all_of(c(meta_vars,otus_used)))
+    select(all_of(c(meta_vars,otus_used))) 
 colnames(data_filter_otus)
 dim(data_filter_otus)
-
 
 
 
@@ -85,7 +84,8 @@ data_include_missing <- left_join(expected_combos, data_twins_only,
 long_data_no_na <- pivot_longer(data_twins_only, 
                                 cols = `Blautia`:`Ruminococcus.1`, 
                                 names_to = "OTU") %>% 
-    separate(twin_family, c("id","family"))
+    separate(twin_family, c("id","family"))%>% 
+    mutate(OTU = factor(OTU, levels = otus_used))
 dim(long_data_no_na)
 ## get a vector representing how many observations in each cluster 
 long_data_no_na %>% 
@@ -98,7 +98,8 @@ long_data_no_na %>%
 # and where we do so it is the "right dimension 
 long_data<- pivot_longer(data_include_missing, 
                          cols = `Blautia`:`Ruminococcus.1`, 
-                         names_to = "OTU") 
+                         names_to = "OTU") %>% 
+    mutate(OTU = factor(OTU, levels = otus_used))
 dim(long_data)
 # This is the same dimension as in the paper
 # see we have 36 observations per cluster 4 timepoints and 9 otus
@@ -119,6 +120,11 @@ long_data_neat <- long_data %>%
 long_data_neat %>% 
     group_by(family) %>% tally() %>% 
     pull(n)
+
+
+## sort to be by OTU, 
+long_data_neat <- long_data_neat %>% 
+    arrange(family, OTU)
 
 return(long_data_neat)
 }

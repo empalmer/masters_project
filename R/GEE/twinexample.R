@@ -58,8 +58,10 @@ dim(clean_twindata)
 ### Convert data into presence/absence
 # Presence/absence  data 
 data0 <- clean_twindata %>% 
-    mutate(presence = ifelse(value == 0, 0, 1)) 
+    mutate(presence = ifelse(value == 0, 0, 1)) %>% 
+    arrange(family, OTU, time)
 dim(data0)
+
 
 
 
@@ -70,14 +72,16 @@ library(geepack)
 # cluster - family we have 54 families and they "should" have 36 observations
 # some missing 
 # TODO - Wave indication of correlation parameter for twin/time/otu combo
-
-
-
+# mutate(cor_id = paste0(twin_id, time, OTU))
 #Initial idea for waves? Figure out later 
 # if it was the unique combo we woudl have too many correlations to estimate
-data0_sorted <- data0 %>%
-    mutate(cor_id = paste0(twin_id, time, OTU))
-length(unique(data0_sorted$cor_id))
+
+### Reorder the clusters in the data to have all the same OTUs together (done in twin function)
+# order by family (cluster), otu, sample (twin), time 
+#data0_sorted <- data0 %>%
+#    mutate(OTU = factor(OTU, levels = c("Blautia",Coprococcus)))
+#    fct_relevel(OTU, "Blautia")
+    
 
 
 
@@ -86,22 +90,27 @@ length(unique(data0_sorted$cor_id))
 # That accounts for missing data 
 source(here::here("R","GEE","create_zcor.R"))
 
-#zcor <- get_correctedzcor()
+clusz <- get_clusz(data0, family)
+zcor <- adjust_zcor(data0, max_size = 36, dim = list(9,c(4,1,4)), par = c(2,2), n = 54)
+
+nrow(zcor)
+sum(clusz * (clusz - 1) / 2)
+
 
 # fit the model...
-geeglm(
+mod1 <- geeglm(
     presence ~ obesity,
-    data = data0_sorted,
+    data = data0,
     family = "binomial",
     id = family,
     corstr = "userdefined",
-    zcor = zcor, 
-    waves = cor_id
+    zcor = zcor
 )
-nrow(zcor)
+summary(mod1)
 
 
-
+R <- cor2zcor(1,dim = list(9,c(4,1,4)),c(2,2),corstr="exchangeable",otustr="exchangeable")[[1]]
+View(R)
 
 # How to calculate RA? is it only of these OTUs? do i use the total column? 
 

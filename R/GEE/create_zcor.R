@@ -1,74 +1,148 @@
 source(here::here("GEE_Chen2020","cor2zcor.r"))
 
 
-
-########## Create a separate zcor for each family depending on data 
-data_twins_only %>% 
-    group_by(FAMILY) %>% tally() %>% table()
-data_twins 
-data_twins_only %>% 
-    group_by(FAMILY,HOST_SUBJECT_ID) %>% tally()
-table_data <- data_twins_only %>% 
-    select(FAMILY,HOST_SUBJECT_ID)
-
+#' Get cluster sizes
+#'
+#' @param data Data in long format. Can contain missing observations
+#' @param cluster_col The column in your data that represents the cluster
+#'
+#' @return A vector indicating how many observations are in each cluster 
+#' @export
+#'
+#' @examples get_clusz(clean_twindata, family)
+get_clusz <- function(data, cluster_col){
+    clusz <- data %>% 
+        na.omit() %>%
+        group_by({{cluster_col}}) %>% 
+        tally() %>% 
+        pull(n)
+    return(clusz)
+}
 
 
 ########## ##############################
 ########## ##############################
 ########## Reduce the zcor matrix #######
 #########################################
-# clusz vector with the 
 
 # parameters for twin data: 
-n <- 54
+# for testing the funciton 
+source(here::here("R","GEE","clean_twindata.R"))
+clean_twindata <- clean_twinexample_data()
+clusz <- get_clusz(clean_twindata, family)
+n <- length(clusz)
 dim <- list(9,c(4,1,4))
 par <- c(2,2)
 max_size <- 36
 
+data <- clean_twindata
+cluster_column <- "family"
+
+#' Filter R missing
+#' 
+#' For a given cluster, filter the corresponding integrative correlation matrix based on the 
+#' missing observations in the data
+#'
+#' @param clust_index an index from 0 to number of clusters 
+#' @param dim OTU dimension used to build full R and zcor
+#' @param par repeated measure used to build full R and zcor
+#' @param data data that contins missing values 
+#' @param max_size size of a full cluster
+#' @param n_cor number of correlations to extimate 
+#'
+#' @return A data frame containing the adjusted zcor for one cluster
+#' @export
+#'
+#' @examples
+filter_R_missing <- function(clust_index, dim, par, data, max_size, n_cor){
+    # full R matrix - 
+    # change from n to 1? 
+    # subtract 1 
+    # probably move this out of this function later for computation time 
+    zcor_full <- cor2zcor(1, dim, par,corstr = "exchangeable",otustr = "exchangeable")[[2]]
+    R <- cor2zcor(1, dim, par, corstr = "exchangeable", otustr = "exchangeable")[[1]] - 1
+    
+    
+    # Filter the data to be only the rows on the focused on cluster 
+    # TODO later fix to be general value column 
+    row_start <- clust_index * max_size + 1
+    row_end <- row_start + max_size - 1
+    data_cluster <- data[row_start:row_end,]$value
+    
+    
+    # Dplyr version of the above, change later 
+    # Filter the data for the cluster analyzed in this "loop"
+    # TODO fix later to be general cluster column name 
+    #data_for_cluster <- data %>% 
+    #    filter(family== 1
+    
+    #my version
+    missing_values <- is.na(data_cluster)
+    R[missing_values,] <- -2
+    R[,missing_values] <- -2
+    
+    #convert R matrix into a vector, taking only the lower triangular part of 
+    # the matrix. This will be used for indexing
+    matrix_as_vector <- as.numeric(R[lower.tri(R)])
+    # filter out the rows of the full zcor matrix where there is an NA value (-2)
+    zcor_reduced <- zcor_full[matrix_as_vector != -2, ]
+    
+    return(zcor_reduced)
+}
 
 library(Matrix)
-adjust_zcor <- function(clusz, max_size, dim, par, n){
-    #create the unadjusted zcor, if there were full 
-    zcor_unadjusted <- cor2zcor(n, dim, par, corstr = "exchangeable", otustr = "exchangeable")[[2]]
+#' Adjust zcor
+#'
+
+#' @param max_size Size of a "full" cluster
+#' @param dim Correlation structure for OTUs
+#' @param par Repeated measure correlation structure
+#' @param n Number of clusters
+#' @param data Data frame including missing observations - must be ordered in terms of cluster 
+#' 
+#'
+#' @return Adjusted Integrative Correlation Matrix R that accounts for missing data
+adjust_zcor <- function(data, max_size, dim, par, n){
+    #create vector of unique cluster_ids 
+    #clust_names <- data %>% 
+    #    pull({{cluster_column}}) %>% 
+    #    unique()
+    # Generl
+
+    # create the unadjusted zcor, if there were no missing
+    # rows corresponding to missing obs will be removed 
+    cors <- cor2zcor(n, dim, par, corstr = "exchangeable", otustr = "exchangeable")
+    zcor_unadjusted <- cors[[2]]
+    R_unadjusted <- cors[[1]]
     
-    # number of correlation paramters they are estimating 
+    # number of correlation parameters they are estimating 
+    # corresponds to the number of columns in zcor
     # 15 for twin example 
-    n.cor <- dim(zcor_unadjusted)[2]
-    n.cor
-    # initialize 
-    zcor.reduced = data.frame()
-    
-    
-    
+    n_cor <- ncol(zcor_unadjusted)
+    n_cor
+
+    # Fix this later
+    #clust_index <- 0:(length(clust_names) -1)
+    clust_index <- 0:53
+    zcor_filter_missing <- map(clust_index, ~filter_R_missing(.x ,dim, par, data, max_size, n_cor))
+    #rbind results
+    zcor_combined_filtered_missing <- reduce(zcor_filter_missing, rbind)
+    return(zcor_combined_filtered_missing)
     
 }
 
-for (i in 1:n) {
-    cor.matrix = cor2zcor(n,
-                          dim,
-                          2,
-                          corstr = "exchangeable",
-                          otustr = "exchangeable")[[1]] - 1
-    for (m in 1:M) {
-        if (is.na(Z[(i - 1) * M + m])) {
-            cor.matrix[m, ] = -2
-            cor.matrix[, m] = -2
-        }
-    }
-    temp = as.numeric(cor.matrix[lower.tri(cor.matrix)])
-    
-    if (n.cor > 1) {
-        if (ncol(zcor.reduced) > 0) {
-            zcor.reduced = as.matrix(zcor.reduced)
-        }
-        zcor.reduced = rbind(zcor.reduced, zcor[(i - 1) * length(temp) + 1:length(temp), ][temp !=
-                                                                                               -2, ])
-    }
-    else if (n.cor == 1) {
-        zcor.reduced = c(as.numeric(zcor.reduced), zcor[(i - 1) * length(temp) +
-                                                            1:length(temp)][temp != -2])
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
