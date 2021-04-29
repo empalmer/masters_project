@@ -5,12 +5,14 @@ twindata <- read_excel("Data/twindata.xls")
 source(here::here("GEE_Chen2020","cor2zcor.r"))
 
 
+
+###### Understanding the data
 # What is total read column? 
 colnames(twindata)
 
-# Looks like there is not an even sequencing depth? 
+# The sum of the counts of all the OTUs in the paper does not equal the total read column
 rowSums(twindata[,10:23])
-
+twindata$total_read
 
 
 ########## Exploring the correlation structure 
@@ -23,7 +25,7 @@ gamma <- cor2zcor(1,dim = list(9,c(4,1,4)),1,corstr="exchangeable",otustr="excha
 gamma
 dim(gamma)
 # Omega matrix - for 2 twins and 2 timepoints
-# Shows 
+# Same as paper
 omega <- cor2zcor(1,dim =1,c(2,2),corstr="exchangeable",otustr="exchangeable")[[1]]-1
 omega
 dim(omega)
@@ -35,6 +37,7 @@ dim(omega)
 # This is just for initial exploration 
 # so n = 1 to show the structure
 R_oneobs <- cor2zcor(1,dim = list(9,c(4,1,4)),c(2,2),corstr="exchangeable",otustr="exchangeable")
+R_oneobs[[1]]
 dim(R_oneobs[[2]])
 #34020
 dim(R_oneobs[[1]])
@@ -46,7 +49,7 @@ dim(R_oneobs[[1]])
 # with correct structure and cleaned
 # Has columns: id, family, time, twin_id, subject_id, OTU, value, obesity 
 # This column will be sorted by Family 
-# within family it will be sorted .... 
+# within family it will be sorted by OTU 
 source(here::here("R","GEE","clean_twindata.R"))
 
 clean_twindata <- clean_twinexample_data()
@@ -64,56 +67,35 @@ dim(data0)
 
 
 
-
-
 # Fit model using GEEPACK
 library(geepack)
-# Id: 
-# cluster - family we have 54 families and they "should" have 36 observations
-# some missing 
-# TODO - Wave indication of correlation parameter for twin/time/otu combo
-# mutate(cor_id = paste0(twin_id, time, OTU))
-#Initial idea for waves? Figure out later 
-# if it was the unique combo we woudl have too many correlations to estimate
-
-### Reorder the clusters in the data to have all the same OTUs together (done in twin function)
-# order by family (cluster), otu, sample (twin), time 
-#data0_sorted <- data0 %>%
-#    mutate(OTU = factor(OTU, levels = c("Blautia",Coprococcus)))
-#    fct_relevel(OTU, "Blautia")
-    
-
-
-
+# Id: cluster - family we have 54 families and they "should" have 36 observations - but missing obs
 
 ## Load in corrected Integrative correlation matrix "R"
 # That accounts for missing data 
 source(here::here("R","GEE","create_zcor.R"))
-
-clusz <- get_clusz(data0, family)
 zcor <- adjust_zcor(data0, max_size = 36, dim = list(9,c(4,1,4)), par = c(2,2), n = 54)
 
+# check that we have the correct dimension of zcor to account for missing structure
+clusz <- get_clusz(data0, family)
 nrow(zcor)
 sum(clusz * (clusz - 1) / 2)
 
 
-# fit the model...
+
+# fit the presence/absence part of the model 
 mod1 <- geeglm(
     presence ~ obesity,
     data = data0,
     family = "binomial",
     id = family,
     corstr = "userdefined",
-    zcor = zcor
+    zcor = zcor,
+    scale.fix = TRUE
 )
 summary(mod1)
 
-
-R <- cor2zcor(1,dim = list(9,c(4,1,4)),c(2,2),corstr="exchangeable",otustr="exchangeable")[[1]]
-View(R)
-
-# How to calculate RA? is it only of these OTUs? do i use the total column? 
-
+### ... not the same result as the paper (beta0 = -.511)
 
 
 
