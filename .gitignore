@@ -43,3 +43,6 @@ vignettes/*.pdf
 # Ignore folder with copies of pdf Journals
 /Notes/Journals/Papers
 /Data/Turnbaugh2009.pdf
+
+
+/Data/American_Gut/*
