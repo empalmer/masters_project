@@ -1,16 +1,5 @@
 
 
-# examples for testing 
-file <- here::here("Data","American_Gut","AG_100nt_taxonomy.txt")
-colnames = c("OTU_id", 1:4827,"k","p","c","o","f","g","s")
-gut <- read_table2(file, skip = 2, n_max = 50, col_names = colnames)
-
-gut_taxa <- gut %>% 
-    select(c("k","p","c","o","f","g","s"))
-
-data <- gut_taxa
-
-
 #' Helper function to return taxa counts by 
 #'
 #' @param data 
@@ -21,7 +10,8 @@ data <- gut_taxa
 #'
 #' @examples
 taxa_group_tally <- function(data, taxa_col) {
-    # TODO preserve order 
+    # TODO preserve order of data... 
+    # or ... order data by this ordering later... probably this 
     taxa_counts <- data %>% 
         group_by_at(taxa_col) %>% 
         tally() 
@@ -30,20 +20,27 @@ taxa_group_tally <- function(data, taxa_col) {
 
 
 #' Helper function to treat blank taxa as distinct
+#' 
+#' Taxa with black levels have the form "x__;" These should all count as separate 
+#' level ids when making the tree. Replace these values with the Unique OTU ids 
+#' so counts are correct. 
+#' 
+#' This should be the first step. 
 #'
+#' @param ranks 
 #' @param data 
-#' @param taxa_col 
 #'
 #' @return
 #' @export
 #'
 #' @examples
-blank_taxa_fill <- function(data,taxa_col) {
-    
-    blank_indecis <- data %>%
-        mutate(remove_1 = )
-    
-    
+blank_taxa_fill <- function(data, taxa_levels = c("k","p","c","o","f","g","s")) {
+    #fix later to be more general..., with a general OTU id col
+    # also with better blank fill condition
+    blank_indeces <- data %>%
+        mutate_at(taxa_levels, function(x){ifelse(nchar(x) <= 4, .$OTU_id, x)}) 
+
+    return(blank_indeces)
 }
 
 
@@ -56,12 +53,59 @@ blank_taxa_fill <- function(data,taxa_col) {
 #' @export
 #'
 #' @examples
-tax2cor <- function(data, ranks = c("k","p","c")){
+tax2cor <- function(data, taxa_levels = c("k","p","c","o","f","g","s")){
     
+    # do unique blank values 
+    blank_replaced <- blank_taxa_fill(data,taxa_levels)
+    
+    # do tally
     #col_ranks <- c("k","p","c","o","f","g","s")
-    all <- map(col_ranks, ~taxa_group_tally(data,.x))
+    all <- map(taxa_levels, ~taxa_group_tally(blank_replaced,.x))
     all
-    
-    
-    ## need to introduce noise/fill in  when there is empty values. 
+    return(all)
 } 
+
+
+
+
+
+#' Sort by the levels, alphabetically 
+#' This should be the final order of the data 
+#'
+#' @param taxa_levels 
+#' @param data 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sort_by_taxa <- function(data,taxa_levels = c("k","p","c","o","f","g","s")) {
+    sorted <- data %>% 
+        arrange_at(taxa_levels)
+    return(sorted)
+    
+}
+
+sort_by_taxa(gut_taxa)
+
+
+
+
+#' Add up observations at a taxa level 
+#'
+#' @param data Data, where blank values the specified level are filled with unique placeholders
+#' @param taxa_level at what level should we sum?
+#' @param count_cols vector of the sample columns to sum over
+#'
+#' @return
+#' @export
+#'
+#' @examples
+sum_at_taxa_level <- function(data, taxa_level, ...) {
+    summed_data <- data %>% 
+        group_by_at(taxa_level) %>% 
+        summarize_if(is.numeric,sum)
+    return(summed_data)
+}
+
+
