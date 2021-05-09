@@ -12,9 +12,14 @@
 taxa_group_tally <- function(data, taxa_col) {
     # TODO preserve order of data... 
     # or ... order data by this ordering later... probably this 
+    #taxa_counts <- data %>% 
+    #    group_by_at(taxa_col) %>% 
+    #    tally() 
     taxa_counts <- data %>% 
         group_by_at(taxa_col) %>% 
-        tally() 
+        add_tally() %>% 
+        select(n) %>% 
+        distinct()
     return(taxa_counts)
 }
 
@@ -56,11 +61,12 @@ blank_taxa_fill <- function(data, taxa_levels = c("k","p","c","o","f","g","s")) 
 tax2cor <- function(data, taxa_levels = c("k","p","c","o","f","g","s")){
     
     # do unique blank values 
-    blank_replaced <- blank_taxa_fill(data,taxa_levels)
+    #blank_replaced <- blank_taxa_fill(data,taxa_levels)
     
     # do tally
     #col_ranks <- c("k","p","c","o","f","g","s")
-    all <- map(taxa_levels, ~taxa_group_tally(blank_replaced,.x))
+    #all <- map(taxa_levels, ~taxa_group_tally(blank_replaced,.x))
+    all <- map(taxa_levels, ~taxa_group_tally(data,.x))
     all
     return(all)
 } 
@@ -86,7 +92,6 @@ sort_by_taxa <- function(data,taxa_levels = c("k","p","c","o","f","g","s")) {
     
 }
 
-sort_by_taxa(gut_taxa)
 
 
 
