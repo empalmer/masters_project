@@ -1,4 +1,4 @@
-
+library(lazyeval)
 
 #' Helper function to return taxa counts by 
 #'
@@ -10,11 +10,7 @@
 #'
 #' @examples
 taxa_group_tally <- function(data, taxa_col) {
-    # TODO preserve order of data... 
-    # or ... order data by this ordering later... probably this 
-    #taxa_counts <- data %>% 
-    #    group_by_at(taxa_col) %>% 
-    #    tally() 
+    # Done this way to preserve order of the data 
     taxa_counts <- data %>% 
         group_by_at(taxa_col) %>% 
         add_tally() %>% 
@@ -39,19 +35,21 @@ taxa_group_tally <- function(data, taxa_col) {
 #' @export
 #'
 #' @examples
-blank_taxa_fill <- function(data, taxa_levels = c("k","p","c","o","f","g","s")) {
+blank_taxa_fill <- function(data, taxa_levels = c("k","p","c","o","f","g","s"), otu_id_col) {
     #fix later to be more general..., with a general OTU id col
-    # also with better blank fill condition
+    # Blank cols will be of the form x__
     blank_indeces <- data %>%
-        mutate_at(taxa_levels, function(x){ifelse(nchar(x) <= 4, .$OTU_id, x)}) 
-
+        mutate_at(taxa_levels, function(x){ifelse(nchar(x) == 3, .$`#OTU ID`, x)}) 
+    
     return(blank_indeces)
 }
 
 
+
+
 #' Tax2cor: given data consisting of separate taxa columns, return a list appropriate for cor2zcor structure
 #'
-#' @param data with columns "k","p","c","o","f","g","s" 
+#' @param data with columns "k","p","c","o","f","g","s" Data shoudl have blank taxa names filled 
 #' @param ranks A vector of the ranks to extract structure from
 #'
 #' @return a list that gives the tree structure 
@@ -59,13 +57,6 @@ blank_taxa_fill <- function(data, taxa_levels = c("k","p","c","o","f","g","s")) 
 #'
 #' @examples
 tax2cor <- function(data, taxa_levels = c("k","p","c","o","f","g","s")){
-    
-    # do unique blank values 
-    #blank_replaced <- blank_taxa_fill(data,taxa_levels)
-    
-    # do tally
-    #col_ranks <- c("k","p","c","o","f","g","s")
-    #all <- map(taxa_levels, ~taxa_group_tally(blank_replaced,.x))
     all <- map(taxa_levels, ~taxa_group_tally(data,.x))
     all
     return(all)
@@ -99,14 +90,14 @@ sort_by_taxa <- function(data,taxa_levels = c("k","p","c","o","f","g","s")) {
 #' Add up observations at a taxa level 
 #'
 #' @param data Data, where blank values the specified level are filled with unique placeholders
-#' @param taxa_level at what level should we sum?
+#' @param taxa_level at what level should we sum? Default to species 
 #' @param count_cols vector of the sample columns to sum over
 #'
 #' @return
 #' @export
 #'
 #' @examples
-sum_at_taxa_level <- function(data, taxa_level, ...) {
+sum_at_taxa_level <- function(data, taxa_level = "s", ...) {
     summed_data <- data %>% 
         group_by_at(taxa_level) %>% 
         summarize_if(is.numeric,sum)
@@ -114,3 +105,4 @@ sum_at_taxa_level <- function(data, taxa_level, ...) {
 }
 
 
+#test_sum <- sum_at_taxa_level(gut_subset[1:30,], taxa_level = c("k","p","c","o","f","g","s"))
