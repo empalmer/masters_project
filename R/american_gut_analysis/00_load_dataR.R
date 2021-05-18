@@ -31,11 +31,16 @@ write_rds(gut_full, here::here("Data","American_Gut","gut_data_taxonomy.rds"))
 ###### Metadata stuff 
 file_meta <- here::here("Data","American_Gut","AG_100nt.txt")
 meta <- read_tsv(file_meta)
-
+colnames(meta)
+write_rds(meta_full,here::here("Data","American_Gut","metadata_full.rds"))
 
 # change the selected once we have good covariates to use 
 meta_select <- meta %>% 
-    select(`#SampleID`, BODY_SITE, CARBOHYDRATE_PER, AGE)
+    select(`#SampleID`, BODY_SITE, TYPES_OF_PLANTS, AGE)
 
+meta %>% 
+    select(TYPES_OF_PLANTS) 
+
+unique(meta$TYPES_OF_PLANTS)
 
 write_rds(meta_select,here::here("Data","American_Gut","selected_metadata.rds"))

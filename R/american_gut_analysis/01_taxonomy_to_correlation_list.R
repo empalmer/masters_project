@@ -38,8 +38,20 @@ taxa_group_tally <- function(data, taxa_col) {
 blank_taxa_fill <- function(data, taxa_levels = c("k","p","c","o","f","g","s"), otu_id_col) {
     #fix later to be more general..., with a general OTU id col
     # Blank cols will be of the form x__
-    blank_indeces <- data %>%
-        mutate_at(taxa_levels, function(x){ifelse(nchar(x) == 3, .$`#OTU ID`, x)}) 
+    # blank_indeces <- data %>%
+    #     mutate_at(taxa_levels, function(x){ifelse(nchar(x) == 3, .$`#OTU ID`, x)}) 
+    #data <- head_gut %>% relocate(c(all_of(otu_id_col),"k","p","c","o","f","g","s"))
+    
+    ## FIX THIS LATER to be efficient... 
+    # if the taxa at the given level is "blank" fill with the higher level value. 
+    blank_indeces <- data %>% 
+        mutate(k = ifelse(nchar(k) == 3, `#OTU ID`, k)) %>% 
+        mutate(p = ifelse(nchar(p) == 3, k, p)) %>% 
+        mutate(c = ifelse(nchar(c) == 3, p, c)) %>%
+        mutate(o = ifelse(nchar(o) == 3, c, o)) %>%
+        mutate(f = ifelse(nchar(f) == 3, o, f)) %>%
+        mutate(g = ifelse(nchar(g) == 3, f, g)) %>%
+        mutate(s = ifelse(nchar(s) == 3, g, s)) %>%
     
     return(blank_indeces)
 }

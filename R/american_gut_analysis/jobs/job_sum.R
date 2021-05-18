@@ -1,6 +1,6 @@
 # Load data and packages ------ 
 library(tidyverse)
-source(here::here("R","american_gut_analysis","taxonomy_to_correlation_list.R"))
+source(here::here("R","american_gut_analysis","01_taxonomy_to_correlation_list.R"))
 source(here::here("GEE_Chen2020","cor2zcor.r"))
 
 # Load data ---- 

@@ -5,7 +5,7 @@
 Following [this paper](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008108), I am using a tree-based correlation structure and integrating with longitudinal correlation structure for microbiome data. Using generalized estimating equations for model fitting.
 
 ### Current status:
-Working on getting the code working on a case study
+Working on getting the code working on a case study - American Gut data 
 
 ### Goals:
 

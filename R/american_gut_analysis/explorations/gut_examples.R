@@ -1,44 +1,17 @@
-# testing the tax2cor function
-# do the one in the paper 
-
-o <- rep("o__Clostridiales",9)
-f <- c(rep("f__Lachno",4),"f__Eubacter",rep("f__Ruminococcaceae",4))
-g <- c(
-    "g__Blautia",
-    "g__Coprococcus",
-    "g__Lachnospira",
-    "g__Roseburia",
-    "g__Eubacterium",
-    "g__Ruminococcus",
-    "g__Faecalibacterium",
-    "g__Oscillospira",
-    "g__Ruminococcus.1"
-)
-
-
-test_data <- data.frame(o,f,g)
-(paper_data_sorted <- sort_by_taxa(test_data, taxa_levels = c("o","f","g")))
-tax2cor(paper_data_sorted, taxa_levels = c("o","f","g"))
-
-# This works, but it is in a different order than the paper, so the integrative correlation matrix will be different. 
-
-
-
-
 
 ### Examples with the gut data, running throught the pipeline of fxns in the right order 
 # Load the data 
-file <- here::here("Data","American_Gut","AG_100nt_taxonomy.txt")
 gut_data <- read_rds(here::here("Data","American_Gut","gut_data_taxonomy.rds"))
+gut_data <- gut_data %>% relocate(c("#OTU ID","k","p","c","o","f","g","s"))
 
-
-
-# try it out 
-source(here::here("R","american_gut_analysis","taxonomy_to_correlation_list.R"))
+# Load functions
+source(here::here("R","american_gut_analysis","01_taxonomy_to_correlation_list.R"))
 
 #replace blank levels with the OTU id to count as distinct
 gut_full_blank <- blank_taxa_fill(gut_data)
-gut_full_blank[,4830:4835]
+
+
+
 
 # sum up at given level default to species 
 # This takes FOREVER to run.... 
@@ -99,7 +72,7 @@ c <- c("B","D","F","A","C","E")
 (df_sort_test <- data.frame(k,p,c)[sample(1:6,6),])
 
 (df_sorted <- df_sort_test %>% 
-    arrange(k,p,c))
+        arrange(k,p,c))
 tax2cor(df_sorted, taxa_levels = c("k","p","c"))
 
 # test summing up over at a level. this function should take in ordered data 
@@ -124,4 +97,3 @@ test_blank_fill %>%
 
 gut_full %>% 
     filter(s == "s__prausnitzii") 
-
