@@ -1,25 +1,10 @@
-### Examples with the gut data, running throught the pipeline of fxns in the right order 
+
 # Load the data 
 library(tidyverse)
 
 #load in data
 gut_data <- read_rds(here::here("Data","American_Gut","gut_data_taxonomy.rds"))
 taxnames <- c("k","p","c","o","f","g","s")
-
-small <- head(gut_data)
-dim(gut_data)
-
-# Filter out low sampling depth 
-## First remove low sampling depth values. 
-# sampling depth would be the sum of each column
-# total OTUS for each sample
-# testing this workflow
-# small_sample <- small[,10:100] %>% 
-#     summarize_all(sum)
-# length(small_sample > 0)
-# colnames(small_sample)[small_sample>0]
-# colnames(small_sample > 0)
-
 # Takes 1 min to run
 sampling_depth <- gut_data %>% 
     select(-c("#OTU ID","k","p","c","o","f","g","s")) %>% 
@@ -32,29 +17,11 @@ gut_drop_low_sampling_depth <- gut_data %>%
     select(-all_of(low_sampling_depth_sample_names))
 # drops ~400 samples
 dim(gut_drop_low_sampling_depth)
-
-
-
-# View distribution of sampling depths. 
-# ASK ASK what is a good cutoff? 100? 
-ggplot(data.frame(x = t(sampling_depth))) + 
-    geom_histogram(aes( x= x))+
-    xlim(0,10000)
-hist(t(sampling_depth))
-
-# write if need to save
-# write_rds(gut_drop_low_sampling_depth, here::here("Data","American_Gut","sampling_depth.rds"))    
-
-
-
 #### Filter to be only kingdom Bacteria OTUs. 
 gut_bacteria <- gut_drop_low_sampling_depth %>% 
     filter(k == "k__Bacteria")
 dim(gut_bacteria)
 # removes ~ 100 rows 
-
-
-
 
 ######## Filter to only be samples from one body site 
 #### AND no antibiotics in the past year. 
@@ -68,45 +35,28 @@ selected_sample_site <- selected_metadata %>%
     filter(ANTIBIOTIC_SELECT == "Not in the last year") %>% 
     pull(`#SampleID`)
 
+selected_sample_site <- selected_sample_site[1:100]
+
 # Subset the columns to be only the samples at the given sample site 
 names(gut_bacteria)
 gut_bacteria_site <- gut_bacteria[, names(gut_bacteria) %in% c("#OTU ID", selected_sample_site, taxnames) ]
 dim(gut_bacteria_site)
+colnames(gut_bacteria_site)
 # removes about 1000 samples
 
 
-# save intermediate step 
-write_rds(gut_bacteria_site, here::here("Data","American_Gut","gut_bacteria_site.rds"))
+filtered_data <- gut_bacteria_site
 
-
-
-
-
-# fill blanks and sum at genus level... - also done in job_sum.R file 
+# fill blanks and sum at genus level.
 source(here::here("R","american_gut_analysis","01_taxonomy_to_correlation_list.R"))
 
-# Load data ---- 
-filtered_data <- read_rds(here::here("Data","American_Gut","gut_bacteria_site.rds"))
 
 # Fill in blanks ---- 
 gut_full_blank <- blank_taxa_fill(filtered_data)
 
 # sum at genus level  ---- 
-gut_full_sum_genus_level <- sum_at_taxa_level(gut_full_blank,c("k","p","c","o","f","g"))
-
-
-# write rds ---- 
-write_rds(gut_full_sum_genus_level , here::here("Data","American_Gut","sum_genus_filtered.rds"))
-
-
-
-
-
-
-
-sum_genus_filtered <- read_rds(here::here("Data","American_Gut","sum_genus_filtered.rds"))
-dim(sum_genus_filtered)    
-# this filters down a LOT!! 
+sum_genus_filtered <- sum_at_taxa_level(gut_full_blank,c("k","p","c","o","f","g"))
+dim(sum_genus_filtered)
 
 
 
@@ -134,22 +84,12 @@ dim(genus_thresholded)
 # Now only 165 OTUs included! (for 10% sparcity )
 
 
-write_rds(genus_thresholded, here::here("Data","American_Gut","genus_threshold_10.rds"))    
-    
-    
+write_rds(genus_thresholded, here::here("Data","American_Gut","samples100.rds"))  
 
 
 
 
 
 
-    
-# test to make sure my dplyr code is working
-# s1 <- c(0,0,0,0,0,0,0,0)
-# s2 <- c(1,0,0,0,0,0,0,0)
-# s3 <- c(1,1,1,1,0,0,0,0)
-# 
-# test_colsum <- data.frame(s1,s2,s3)
-# test_colsum %>% rowwise() %>%
-#     mutate(per = mean(c_across(s1:s3 ) > 0))
+
 

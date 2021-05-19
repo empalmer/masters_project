@@ -1,5 +1,5 @@
 library(tidyverse)
-source(here::here("R","american_gut_analysis","taxonomy_to_correlation_list.R"))
+source(here::here("R","american_gut_analysis","01_taxonomy_to_correlation_list.R"))
 source(here::here("GEE_Chen2020","cor2zcor.r"))
 ## load in ----- 
 # try at species level 
@@ -8,7 +8,8 @@ source(here::here("GEE_Chen2020","cor2zcor.r"))
 #filtered_data2 <- read_rds(here::here("Data","American_Gut","sum_species_level.rds"))
 
 # try at thresholded genus level at selected sample sites 
-filtered_data <- read_rds(here::here("Data","American_Gut","genus_threshold_10.rds"))
+#filtered_data <- read_rds(here::here("Data","American_Gut","genus_threshold_10.rds"))
+filtered_data <- read_rds(here::here("Data","American_Gut","samples100.rds"))
 
 ## get taxa list ---- 
 taxa_count_list <- tax2cor(filtered_data, taxa_levels = c("k","p","c","o","f","g"))
@@ -30,6 +31,7 @@ K
 # Number of total OTUs 
 N <- sum(dim[[K]])
 N
+library(Matrix)
 count = dim
 if (K > 1) {
     for (k in (K - 1):1) {
@@ -87,16 +89,13 @@ for (k in K:1) {
     structure.OTU = BD
 }
 
-
+dim(structure.OTU)
 view_otu <- cbind(filtered_data[,1:6],structure.OTU)
 View(view_otu)
 write_rds(structure.OTU,here::here("Data","American_Gut","R_genus_threshold.rds") )
 
 # number of correlations to estimate: 
-max(structure.OTU) -1
-
-
-
+max(structure.OTU) - 1
 
 
 # Calculate the zcor matrix: 
@@ -123,9 +122,39 @@ n_samples
     
 # initialize 
 #check dimension 
-n_samples*choose(N , 2)
+n_samples*choose(N , 2) * max_structure_OTU
+2^31
+
+# CAN initialize. 
 zcor = matrix(nrow = n_samples*choose(N , 2), ncol = max_structure_OTU )
+
+
+# But this for loop won't run. 
 for (i in 1:max_structure_OTU ) {
     zcor[, i] = rep(as.numeric(structure.OTU[lower.tri(structure.OTU)] == i + 1),n_samples)
 }
 dim(zcor)
+
+
+write_rds(zcor,here::here("Data","American_Gut","zcor_100_samples.rds") )
+
+
+
+
+# Will purr version work? 
+# start 
+lower_tri <- lower.tri(structure.OTU)
+lower_tri_vals <- structure.OTU[lower_tri]
+
+
+
+zcor_full <- map_dfc(1:53, ~rep(as.numeric(lower_tri_vals == .x + 1), n_samples))
+
+
+write_rds(zcor_full,here::here("Data","American_Gut","zcor_full.rds") )
+
+zcor_full <- read_rds(here::here("Data","American_Gut","zcor_full.rds") )
+
+dim(zcor_full)[1]*dim(zcor_full)[2]
+str(zcor_full)
+zcor_mat <- as.matrix(zcor_full)

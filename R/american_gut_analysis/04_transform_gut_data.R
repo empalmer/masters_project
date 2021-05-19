@@ -4,8 +4,9 @@
 ## Currently it is rows = OTU, sample = Col 
 
 # Load data 
-filtered_data <- read_rds(here::here("Data","American_Gut","genus_threshold_10.rds"))
-
+#filtered_data <- read_rds(here::here("Data","American_Gut","genus_threshold_10.rds"))
+# try using only 100 samples to make it run... 
+filtered_data <- read_rds(here::here("Data","American_Gut","samples100.rds"))
 
 
 ## Step 1 - transpose data 
@@ -62,11 +63,13 @@ combined <- test_t2 %>%
     left_join(meta, by = c("sample_id" = "#SampleID")) %>% 
     select(-BODY_SITE)
 
+write_rds(combined, here::here("Data","American_Gut","gut_meta_filtered.rds"))
+
 
 ## GEE model has 1 row per observation. 1 row per OTU per sample.
 ## pivot_longer 
 gut_otu_response <- combined %>% 
-    pivot_longer(cols = !c("sample_id","TYPES_OF_PLANTS","AGE"), 
+    pivot_longer(cols = !c("sample_id","TYPES_OF_PLANTS","AGE","ANTIBIOTIC_SELECT"), 
                  names_to = "OTU_name", 
                  values_to = "OTU_value")
 
@@ -75,6 +78,8 @@ gut_otu_response <- combined %>%
 gut_otu_repsonse_presence <- gut_otu_response %>% 
     mutate(presence = OTU_value > 0)
 
+
+write_rds(gut_otu_repsonse_presence, here::here("Data","American_Gut","prevalence100.rds"))
 
 
 

@@ -9,8 +9,8 @@ library(geeM)
 
 gut_otu_repsonse_presence
 colnames(gut_otu_repsonse_presence)
-#start 10:21
-geem(presence ~ AGE, data = gut_otu_repsonse_presence, family = binomial, 
+#start 10:35
+geem(presence ~ AGE, data = gut_otu_repsonse_presence, family = binomial, id = sample_id,
      corstr = "userdefined", corr.mat = structure.OTU)
 
 
