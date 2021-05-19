@@ -2,71 +2,65 @@
 #zcor_full <- read_rds(here::here("Data","American_Gut","zcor_full.rds"))
 
 library(tidyverse)
+
+## Load in the "small" data 
+## There are 94 samples and 162 different OTUs/taxa
+## Will have 94*162 rows 
 filtered_data <- read_rds(here::here("Data","American_Gut","prevalence100.rds"))
+
+# load in correlation matrix for geeM package
+# has dimension 162x162
+r_mat <- read_rds(here::here("Data","American_Gut","R_100.rds"))
+# Load in the zcor for geepack package
+# has dimension 94*choose(162,2) x 53
 zcor <- read_rds(here::here("Data","American_Gut","zcor_100_samples.rds"))
 
 
+# Some transformations to make the code work 
+# geepack needs sample_id as a factor, otherwise it tries to convert to 
+# numeric and runs into problems. 
+# Age should be treated as numeric, as it is originally a character
 filtered_data <- filtered_data %>% 
     mutate(sample_id2 = factor(sample_id), 
            AGE = as.numeric(AGE), 
            presence0 = ifelse(presence,1,0))
 
 
-
-
 library(geepack)
-# over an hour and nothing... 
+# Try the other "simpler" correlation structures built in to geepack
+# These all will run in a reasonable amount of time. (< 1m) 
+geepack_fit_1 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
+                      corstr = "independence")
+geepack_fit_2 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
+                        corstr = "exchangeable")
+geepack_fit_3 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
+                        corstr = "ar1")
+summary(geepack_fit_1)
 
-gendat <- function() {
-    id <- gl(5, 4, 20)
-    visit <- rep(1:4, 5)
-    y <- rnorm(id)
-    dat <- data.frame(y, id, visit)[c(-2,-9),]
-}
-
-
-#generating the design matrix for the unstructured correlation
-zcor <- genZcor(clusz = table(dat$id), waves = dat$visit, corstrv=4)
-# defining the Toeplitz structure 
-zcor.toep<-matrix(NA, nrow(zcor),3)
-zcor.toep[,1]<-apply(zcor[,c(1,4,6)],1,sum)
-zcor.toep[,2]<-apply(zcor[,c(2,5)],1,sum)
-zcor.toep[,3]<-zcor[,3]
-
-zfit1 <- geese(y ~ 1,id = id, data = dat,
-               corstr = "userdefined", zcor = zcor.toep)
-
-set.seed(88)
-dat<-gendat()
-dat
-
-#test with other 
-fake_zcor <- genZcor(clusz = table(filtered_data$sample_id), waves = filtered_data$OTU_name, corstrv = 3)
-fake_zcor
-dim(fake_zcor)
+# Try the unstructured correlation structure, which should be more complicated than userdefined 
+geepack_fit_4 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
+                        corstr = "unstructured")
 
 
-geepack_fit <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
-                      corstr = "unstructured")
-summary(geepack_fit)
-
-geepack_fit <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id, 
-                      corstr = "userdefined", zcor = fake_zcor)
-
-
-geepack_fit <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, 
-                      corstr = "userdefined", zcor = zcor, id = sample_id2)
+# If we have a 'userdefined' correlation structure from zcor
+# At least, it will not run for me
+geepack_fit_zcor <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, 
+                      corstr = "userdefined", zcor = zcor, id = sample_id2, scale.fix = T)
 
 
 
 
+# Next try the geeM package, which uses the original correlation (sqaure)
+# matrix for userdefined 
+# Seems a LOT slower. Won't even run with independence structure...
+# (or takes > 5 min to run, I've always stopped it after 5 min)
 library(geeM)
 
 geem_fit <- geem(presence ~ AGE, data = filtered_data, family = binomial, id = sample_id,
      corstr = "independence")
 
-
-geem(presence ~ AGE, data = filtered_data, family = binomial, id = sample_id,
-     corstr = "userdefined", corr.mat = structure.OTU)
+# Since it takes so long for independence, I havent tried the userdefined option
+#geem(presence ~ AGE, data = filtered_data, family = binomial, id = sample_id,
+#     corstr = "userdefined", corr.mat = r_mat)
 
 

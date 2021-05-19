@@ -144,7 +144,6 @@ adjust_zcor <- function(data, max_size, dim, par, n){
     #rbind results of all clusters to create 1 adjusted corrected zcor. 
     zcor_combined_filtered_missing <- reduce(zcor_filter_missing, rbind)
     return(zcor_combined_filtered_missing)
-    
 }
 
 

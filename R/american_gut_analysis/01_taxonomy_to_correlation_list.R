@@ -1,5 +1,3 @@
-library(lazyeval)
-
 #' Helper function to return taxa counts by 
 #'
 #' @param data 
@@ -118,3 +116,77 @@ sum_at_taxa_level <- function(data, taxa_level = "s", ...) {
 
 
 #test_sum <- sum_at_taxa_level(gut_subset[1:30,], taxa_level = c("k","p","c","o","f","g","s"))
+
+
+
+
+#### Functions for converting zcor for missing/0 data 
+
+
+#' Filter R missing
+#' 
+#' For a given cluster, filter the corresponding integrative correlation matrix based on the 
+#' missing observations in the data. 
+#' This function will be looped over all of the clusters in the data 
+#'
+#' @param clust_index an index from 0 to number of clusters 
+#' @param data data that contins missing values 
+#' @param max_size size of a full cluster
+#' @param zcor_1_full 
+#' @param R_full 
+#' @param value 
+#'
+#' @return A data frame containing the adjusted zcor for one cluster
+#' @export
+#'
+#' @examples
+filter_R_missing <- function(clust_index, data, max_size, zcor_1_full, R_full, value){
+    # Filter the data to be only the rows on the focused on cluster 
+    # TODO later fix to be general value column 
+    row_start <- clust_index * max_size + 1
+    row_end <- row_start + max_size - 1
+    #data_cluster <- data[row_start:row_end,]$value
+    data_cluster <- data[row_start:row_end,value]
+    
+    #Figure out which rows of the family are missing (NA values)
+    #Of the corresponding rows and columns of R, change to be a 
+    # dummy value (-2) chosen, but really any value is ok
+    missing_values <- is.na(data_cluster)
+    R_full[missing_values,] <- -2
+    R_full[,missing_values] <- -2
+    
+    #convert R matrix into a vector, taking only the lower triangular part of 
+    # the matrix. This will be used for indexing
+    matrix_as_vector <- as.numeric(R_full[lower.tri(R_full)])
+    
+    # filter out the rows of the full zcor matrix where there is an NA value (-2)
+    zcor_reduced <- zcor_1_full[matrix_as_vector != -2, ]
+    
+    return(zcor_reduced)
+}
+
+
+
+library(Matrix)
+#' Adjust zcor
+#'
+#' Function that calls the above function for every family value 
+#'
+#' @param max_size Size of a "full" cluster
+#' @param dim Correlation structure for OTUs
+#' @param par Repeated measure correlation structure
+#' @param n Number of clusters
+#' @param data Data frame including missing observations - must be ordered in terms of cluster 
+#' 
+#'
+#' @return Adjusted Integrative Correlation Matrix R that accounts for missing data
+#' 
+adjust_zcor <- function(data, max_size, n, R, zcor, value){
+    
+    clust_index <- 0:(n-1)
+    # For every cluster in the data, call the above function to filter
+    zcor_filter_missing <- map(clust_index, ~filter_R_missing(.x , data, max_size, zcor, R, value))
+    #rbind results of all clusters to create 1 adjusted corrected zcor. 
+    zcor_combined_filtered_missing <- reduce(zcor_filter_missing, rbind)
+    return(zcor_combined_filtered_missing)
+}    

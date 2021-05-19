@@ -46,3 +46,4 @@ vignettes/*.pdf
 
 
 /Data/American_Gut/*
+/Data/temp_dta/zcor_100_samples.rds

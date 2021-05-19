@@ -92,8 +92,8 @@ for (k in K:1) {
 dim(structure.OTU)
 view_otu <- cbind(filtered_data[,1:6],structure.OTU)
 View(view_otu)
-write_rds(structure.OTU,here::here("Data","American_Gut","R_genus_threshold.rds") )
-
+#write_rds(structure.OTU,here::here("Data","American_Gut","R_genus_threshold.rds") )
+write_rds(structure.OTU,here::here("Data","American_Gut","R_100.rds") )
 # number of correlations to estimate: 
 max(structure.OTU) - 1
 
