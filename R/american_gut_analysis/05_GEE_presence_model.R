@@ -6,14 +6,28 @@ library(tidyverse)
 ## Load in the "small" data 
 ## There are 94 samples and 162 different OTUs/taxa
 ## Will have 94*162 rows 
-filtered_data <- read_rds(here::here("Data","American_Gut","prevalence100.rds"))
+filtered_data <- read_rds(here::here("Data","temp_data","prevalence100.rds"))
 
 # load in correlation matrix for geeM package
 # has dimension 162x162
-r_mat <- read_rds(here::here("Data","American_Gut","R_100.rds"))
+r_mat <- read_rds(here::here("Data","temp_data","R_100.rds"))
 # Load in the zcor for geepack package
-# has dimension 94*choose(162,2) x 53
-zcor <- read_rds(here::here("Data","American_Gut","zcor_100_samples.rds"))
+# has dimension 94*choose(162,2) x 54
+# too large to store, calculate below
+#zcor <- read_rds(here::here("Data","temp_data","zcor_100_samples.rds"))
+
+
+max_R <- max(r_mat) - 1
+n <- 94
+N <- nrow(r_mat)
+zcor = matrix(nrow = n*choose(N , 2), ncol = max_R )
+for (i in 1:max_R ) {
+    zcor[, i] = rep(as.numeric(r_mat[lower.tri(r_mat)] == i + 1),n)
+}
+dim(zcor)
+
+
+
 
 
 # Some transformations to make the code work 
