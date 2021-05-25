@@ -1,7 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage[utf8]{inputenc}
-
+\usepackage{setspace}
 \usepackage{amsmath,amsthm,amsfonts,mathtools,color,amssymb}
 \usepackage{tikz}
 \usepackage{mathrsfs}
@@ -12,6 +12,7 @@
 \date{Spring 2021}
 
 \addbibresource{bib.bib}
+\doublespacing
 
 \begin{document}
 
@@ -29,26 +30,66 @@
 \section{Introduction}
 
 \subsection{About microbiome data}
+The human gut contains millions of microbes.
+Genomic research on microbiome sequencing data has provided numerous insights to ...*** Studies have associated the human gut microbiome to irritable bowel syndrome, inflammatory bowel disease, cancers, diabetes, and obesity, with more studies coming out with more interesting results. \cite{kinross2008human} Bidirectional interactions have been found between the gut and the central nervous system, colloquially referred to as the "gut-brain-axis". \cite{mayer2015gut}
+
+These studies show the microbiome to be a research rich and important area of research for advances in medical, and our understanding of ourselves. (FIX)
+
 
 One technique for microbiome analysis is sequencing the 16S ribosomal rRNA gene. This gene is a useful marker for
 
 
 
+Microbiome data commonly is sampled from fecal samples, but oral, skin, vaginal, etc are also common areas (CITE)
 
-Microbiome data generated from 16S ribosomal RNA (rRna) sequencing present many obsticals to analysis using standard statistical methods. There are several aspects common to microbiome data that violate the assumptions of common statistical tests.
+
+Microbiome data commonly arises from 16S ribosomal ribonucleic acid RNA (rRna) sequencing studies. Microbiome sequencing data commonly consists of the count of reads on operational taxonomic units (OTUs) for each sample. Operational taxonomic units are.... Methods for microbiome analysis can either be focused on a single OTU or multiple OTUs simultaneously.
+
+
 
 \subsubsection{Issues with microbiome data}
-\begin{enumerate}
-  \item sparcity
-  \item
-\end{enumerate}
+
+ OTU data present many obstacles to analysis using standard statistical methods.
+
+ There are several aspects common to microbiome data that violate the assumptions of common statistical tests and regression models.
+
+Frequently, the sampling depth (FINISH) is not consistent across samples. One technique to adjust for this is rarifying (CITE, FINISH)
+
+First, the count for a given OTU does not necessarily represent the overall count. In other words, these counts represent relative abundance, not absolute abundance. OTU data is thus compositional in nature. Often, OTU counts are converted into a proportion to represent the relative abundance of that OTU in the sample.
+
+Secondly OTU data is very sparse. The library size of different samples can vary a lot. For many OTUs, the total reads is zero. Thus microbiome data contains excessive zeros, which much be accounted for in the analysis.
+Adjustments can be made using zero inflated models, or two-part models that separately model the presence of an OTU, and then next the abundance of present OTUs.
+
+
+
+
+\subsubsection{Organizing OTUs onto a tree}
+
+(FIND CITATIONS)
+
+All life can be linked back to a biologic tree that describes how each organism is related to each other.
+
+Two types of trees that can arise in microbial studies are phylogenetic trees and taxonomic trees.
+
+Using knowledge of a given OTU (FIX), it can provide insight into correlations that exist between different read counts present in samples, and this correlation can be helpful in modeling overall association with predictors of interest.
+
+
 
 
 \subsection{Generalized Estimating Equations}
+
+Generalized Estimating Equations (GEEs) are a useful tool for correlated data. GEEs were introduced to extend generalized linear models to longitudinal data. \cite{liang1986longitudinal} Consider a response variable $y_{it}$, and a $p \times 1$ vector of covariates $x_{it}$, where $i = 1, \ldots , K$ represents the index of clusters, and $t = 1, \ldots , n_i$ represent the number of time points, or more generally, different values, or repeated measures in an individual cluster.
+
+GEEs work without specifying the joint distribution of observations, similarly to quasi-likelihood approaches.
+
+
+
+
+
+
+
+\section{About the method ()}
 \cite{chen2020generalized}
-
-\section{About the GEE method ()}
-
 
 
 \section{Extensions to the method}
@@ -62,7 +103,7 @@ Microbiome data generated from 16S ribosomal RNA (rRna) sequencing present many 
 
 
 \section{Conclusion}
-
+\subsection{Future work}
 
 
 
