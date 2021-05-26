@@ -78,7 +78,7 @@ Using knowledge of a given OTU (FIX), it can provide insight into correlations t
 
 \subsection{Generalized Estimating Equations}
 
-Generalized Estimating Equations (GEEs) are a useful tool for correlated data. GEEs were introduced to extend generalized linear models to longitudinal data. \cite{liang1986longitudinal} Consider a response variable $y_{it}$, and a $p \times 1$ vector of covariates $x_{it}$, where $i = 1, \ldots , K$ represents the index of clusters, and $t = 1, \ldots , n_i$ represent the number of time points, or more generally, different values, or repeated measures in an individual cluster.
+Generalized Estimating Equations (GEEs) are a useful tool for correlated data, such as those that arise from longitudinal data. GEEs were introduced to extend generalized linear models to longitudinal data. \cite{liang1986longitudinal} Consider a response variable $y_{it}$, and a $p \times 1$ vector of covariates $x_{it}$, where $i = 1, \ldots , K$ represents the index of clusters, and $t = 1, \ldots , n_i$ represent the number of time points, or more generally, different values, or repeated measures in an individual cluster.
 
 GEEs work without specifying the joint distribution of observations, similarly to quasi-likelihood approaches.
 
@@ -89,7 +89,25 @@ GEEs work without specifying the joint distribution of observations, similarly t
 
 
 \section{About the method ()}
-\cite{chen2020generalized}
+
+The Microbiome Taxonomic Longitudinal Correlation (MLTC) model was introduced in 2020 by Chen and Xu\cite{chen2020generalized} as a way to estimate correlations between OTUs and associations between a predictor an, that can be used on longitudinal and repeated measure data. Coefficients are estimated using a two part GEE model that uses a correlation structure based on OTU correlations and longitudinal and repeated measure correlations.
+
+\subsection{Accounting for Correlation}
+
+
+\subsubsection{Model Data structure}
+Commonly, OTU data is stored in two tables. Consider a dataset with $k$ individuals. Each individual $i$ has $n_i$ different samples taken from it. In total there are $M = \sum_{i=1}^k n_j$ samples taken.
+Additionally, each sample has $N$ OTUs measured, and $p$ predictors. The first table contains counts for OTU values, with OTU labels as rows and samples as columns. This table will have overall dimension $N \times M$ The second table contains metadata (predictor) information, with samples as rows and predictor values as columns, having dimension $M \times p$.
+
+In this model, the response is the OTU value (either presence absence, or transformed relative abundance). The reponse $\mathbf{y} = (\mathbf{y}_1, \ldots, \mathbf{y}_k)^t$
+
+
+
+
+\subsubsection{Taxa correlation}
+\subsubsection{Longitudinal and repeated measure correlation}
+\subsubsection{Interative correlation matrix }
+\subsubsection{Two-part GEE model}
 
 
 \section{Extensions to the method}
