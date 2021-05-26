@@ -31,7 +31,7 @@ start_time <- proc.time()
 geepack_fit_zcor <- geeglm(log_ra ~ age_present, family = gaussian, data = log_ra, id = sample_id2,
                            corstr = "userdefined", zcor = zcor_reduced)
 end_time <- proc.time()
-diff <- start_time - end_time
+diff <- end_time - start_time
 write_rds(diff, here::here("R","american_gut_analysis","normal_age_time.rds"))
 write_rds(geepack_fit_zcor,here::here("R","american_gut_analysis","normal_age_gee_mod.rds") )
 
