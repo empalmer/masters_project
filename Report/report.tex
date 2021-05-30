@@ -39,38 +39,46 @@
 \section{Introduction}
 
 \subsection{Microbiome data}
-The human gut contains millions of microbes. Genomic research on microbiome sequencing data has provided numerous insights to human health. Studies have associated the human gut microbiome to irritable bowel syndrome, inflammatory bowel disease, cancers, diabetes, and obesity, with more studies coming out with more interesting results \cite{kinross2008human}. Bidirectional interactions have been found between the gut and the central nervous system \cite{mayer2015gut}. These studies show the microbiome to be a research rich and important area of research for advances in medical, and our understanding of ourselves. (FIX)
-
-Microbiome data commonly arises from 16S ribosomal ribonucleic acid RNA (16s rRna) sequencing studies. This gene is a useful marker for.... Microbiome sample can be collected from fecal samples, but oral, skin, vaginal, etc are also common areas (CITE). Microbiome sequencing data commonly consists of the count of reads on operational taxonomic units (OTUs) for each sample. Operational taxonomic units are.... Methods for microbiome analysis can either be focused on a single OTU or multiple OTUs simultaneously.
+The human gut contains millions of microbes. Genomic research on microbiome sequencing data has provided numerous insights to human health. Studies have associated the human gut microbiome to irritable bowel syndrome, inflammatory bowel disease, cancers, diabetes, and obesity, and shown the existence of bi-directional interactions  between the gut and the central nervous system \cite{kinross2008human}, \cite{mayer2015gut}. These studies show the human microbiome to be a research rich and important area of of focus. Characteristics of this data make this data difficult to analyze using standard statistical methods, so there is also needed work to develop or alter the statistical approaches used for this type of data.
 
 
+Microbiome data commonly arises from 16S ribosomal ribonucleic acid RNA (16s rRna) sequencing studies. This gene is a useful marker for microbe identification. Microbiome sample can be collected from fecal samples, but oral, skin, vaginal, etc are also common areas (CITE). Microbiome sequencing data commonly consists of the count of reads on operational taxonomic units (OTUs) for each sample. Operational taxonomic units refer the bins in which sequences are grouped, but can frequently be mapped back to taxonomic labels from existing libraries. Methods for microbiome analysis can either be focused on a single OTU or multiple OTUs simultaneously.
 
-\subsubsection{Issues with microbiome data}
 
-OTU data present many obstacles to analysis using standard statistical methods.
 
-There are several aspects common to microbiome data that violate the assumptions of common statistical tests and regression models.
+\subsubsection{Characteristics of microbiome data}
+
+OTU data present many obstacles to analysis using standard statistical methods.There are several aspects common to microbiome data that violate the assumptions of common statistical tests and regression models.
 
 Frequently, the sampling depth (FINISH) is not consistent across samples. One technique to adjust for this is rarifying (CITE, FINISH)
 
-First, the count for a given OTU does not necessarily represent the overall count. In other words, these counts represent relative abundance, not absolute abundance. OTU data is thus compositional in nature. Often, OTU counts are converted into a proportion to represent the relative abundance of that OTU in the sample.
+The count for a given OTU does not necessarily represent the overall count. In other words, these counts represent relative abundance, not absolute abundance. OTU data is thus compositional in nature. Often, OTU counts are converted into a proportion to represent the relative abundance of that OTU in the sample.
 
-Secondly OTU data is very sparse. The library size of different samples can vary a lot. For many OTUs, the total reads is zero. Thus microbiome data contains excessive zeros, which much be accounted for in the analysis.
-Adjustments can be made using zero inflated models, or two-part models that separately model the presence of an OTU, and then next the abundance of present OTUs.
+Additionally, OTU data is very sparse. The library size of different samples can vary. For many OTUs, the total reads is zero. Thus microbiome data contains excessive zeros, which much be accounted for in the analysis. Common adjustments, or ways to take into account this, are using zero inflated models, or two-part models that separately model the presence of an OTU, and then next the abundance of present OTUs.
 
 
+SECTION ON LONGITUDINAL STUDIES
 
 
 \subsubsection{Taxonomic tree for OTUs}
 
-(FIND CITATIONS)
-Two types of trees that can arise in microbial studies are phylogenetic trees and taxonomic trees. Phylogenetic trees approximate the evolutionary distance between two organisms... Taxonomic trees represent the hierarchy of shared labels of different taxa levels (Kingdom, Phylum, Class, Order, Family, Genus, Species). Taxonomic trees will be focused on in this project.
+From sequencing information, two types of trees that can arise in microbial studies are phylogenetic trees and taxonomic trees. Phylogenetic trees estimate the evolutionary history between organisms by splitting of a tree to represent shared ancestors. Taxonomic trees represent the hierarchy of shared labels of different classified taxa levels (Kingdom, Phylum, Class, Order, Family, Genus, Species). Ideally, these two trees should be equivalent, but this requires explicit naming and organizing of each bacterial species, which is a imposing and incomplete task. The taxonomic labeling system is coarse for microbial species, and new discoveries and changing naming systems will change its structure. Taxonomic trees will be focused on in this project.
 
-The idea is that knowledge of the placement of a given OTU on the taxonomic tree can provide insight into correlations that exist between different read counts present in samples, and this correlation can be helpful in modeling overall association with predictors of interest.
+\cite{washburne2018methods}
+
+When association studies are performed using multiple OTUs, it could be reasonable to use prior knowledge on the given evolutionary or hierarchical organizational relationship between multiple OTUs. Potentially, evolutionally relationships might correspond to similar relationships between the OTU expression, and chosen covariates. In other words, if a certain OTU is found to be associated with a covariate, we might expect another OTU that is close on the taxonomic tree to also be associated with a covariate, and associated in a similar way. Broadly, we want to use the knowledge of the placement of a given OTU on the taxonomic tree to provide insight into correlations that exist between different read counts present in samples. Hopefully this correlation can be helpful in modeling overall association with predictors of interest.
+
+
+
+
 
 \subsection{Generalized Estimating Equations}
 
-Generalized Estimating Equations (GEEs) are a useful tool for correlated data, such as those that arise from longitudinal data. GEEs were introduced to extend generalized linear models to longitudinal data. \cite{liang1986longitudinal} Consider a response variable $y_{it}$, and a $p \times 1$ vector of covariates $x_{it}$, where $i = 1, \ldots , K$ represents the index of clusters, and $t = 1, \ldots , n_i$ represent the number of time points, or more generally, different values, or repeated measures in an individual cluster. GEEs work without specifying the joint distribution of observations, similarly to quasi-likelihood approaches.
+Generalized Estimating Equations (GEEs) are a useful tool for correlated data, such as those that arise from longitudinal data. GEEs were introduced to extend generalized linear models to longitudinal data \cite{liang1986longitudinal}. While initially aimed for correlations arising from longitudinal data, GEEs can be useful for data with any sort of correlations, longitudinal, repeated measure, etc (FINISH).
+
+
+
+First, we introduce some notation. Consider a response variable $y_{it}$, and a $p \times 1$ vector of covariates $x_{it}$, where $i = 1, \ldots , K$ represents the index of clusters, and $t = 1, \ldots , n_i$ represent the number of time points, or more generally, different values, or repeated measures in an individual cluster. GEEs work without specifying the joint distribution of observations, similarly to quasi-likelihood approaches.
 
 Consider a response $\mathbf{y}$ consisting of $K$ different clusters, where clusters consist of repeated measures (perhaps time points, or different OTUs) on the same individual. Then, we write
 $$g(\mu_{kj}) = \mathbf{x}_{kj}'\boldsymbol \beta$$
