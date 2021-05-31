@@ -154,22 +154,24 @@ The observations in $\mathbf{y}$ are now not independent. There exist possible c
 \subsection{Accounting for Correlation}
 \subsubsection{Taxa correlation}
 
-Previous studies considering the correlations between OTUs have used a Dirichlet multinomial distribution \cite{la2012hypothesis}. However, this assumes a negative correlation between OTUs, which can be reasonable given the compositional nature of the data, but we might want a more general structure that allows for both positive and negative correlations depending on the nature of how given OTUs interact \cite{mandal2015analysis}.
+Previous studies considering the correlations between OTUs have used a Dirichlet multinomial distribution \cite{la2012hypothesis}. However, this assumes a negative correlation between OTUs, which can be reasonable given the compositional nature of the data,. However, the true correlation structure between OTUs can be positive or negative\cite{mandal2015analysis}, and we want to build models that can account for this flexibility depending on the nature of how given OTUs interact.
 
-In order to model the correlation structure between OTUs, the MTLC model uses the taxonomic information hierarchy of each OTU to specify the OTU correlation aspect of the working correlation matrix used in GEE estimation.
+In order to model the correlation structure between OTUs, the MTLC model uses the taxonomic information hierarchy of each OTU to specify the OTU correlation aspect of the working correlation matrix used in GEE estimation, denoted $\Gamma$. In order to reduce from an unspecified correlation matrix, where each OTU has a different correlation (which becomes infeasible to model), we impose the assumption that OTUs have the same correlation if the first shared higher level taxa is the same. Determining the unique correlations will depend on the structure of the taxonomic tree. We will then represent the correlation information from the taxonomic tree into a correlation matrix that keeps track of which correlations are the same.
+
+A taxonomic tree can be represented as a list containing counts of how many OTUs belong each subgroup of successive labels. The highest level should contain all $N$ OTUs, and the lowest level should contain $N$ groups, each with $1$ observation. Consider a taxonomic tree that represents the class, order, family, and genus taxonomic labels for five OTUs. The list \texttt{list(5, c(3,2), c(2,1,1,1), c(1,1,1,1,1))} represents the below tree, as the single class contains all 5 OTUs, the first Order group contains 3 OTUs, and the second contains 2, etc.
+
+$$\includegraphics[width = .4\textwidth]{tree.png}
+\longrightarrow \Gamma = \begin{pmatrix}
+        1 & I & II & IV & IV \\
+        I & 1 & II & IV & IV \\
+        II & II & 1 & IV & IV \\
+        IV & IV & IV & 1 & III \\
+        IV & IV & IV & III & 1
+  \end{pmatrix}$$
 
 
-In order to reduce from an unspecified correlation matrix, where each OTU has a different correlation (which becomes infeasible to model), we impose the assumption that OTUs have the same correlation if the first shared higher level taxa is the same. Determining the unique correlations will depend on the structure of the taxonomic tree. We will then represent the correlation information from the taxonomic tree into a correlation matrix that keeps track of which correlations are the same.
+The roman numerals represent the distinct correlations we assume for the working correlation matrix. In this example, correlation $I$ represents OTUs in the same family, but different genus, $II$ and $III$ represent same orders, but different families, and $IV$ represents different orders but the same class.
 
-A taxonomic tree can be represented as a list containing counts of how many OTUs belong to that . The highest level should contain all $N$ OTUs, and the lowest level should contain $N$ groups, each with $1$ observation. The list \texttt{list(c())} represents the below tree.
-
-Consider a taxonomic tree that represents a given six OTUs.
-
-(TODO FOR ME: TYPESET OWN EXAMPLE AND EXPLAIN)
-
-\includegraphics[width = .5\textwidth]{otu_tree.png}
-
-The roman numerals represent the distinct correlations we assume for the working correlation matrix.
 
 
 \subsubsection{Longitudinal and repeated measure correlation}
