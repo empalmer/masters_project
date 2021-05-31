@@ -1975,12 +1975,14 @@
   </bcf:bibdata>
   <bcf:section number="0">
     <bcf:citekey order="1">kinross2008human</bcf:citekey>
-    <bcf:citekey order="2">mayer2015gut</bcf:citekey>
-    <bcf:citekey order="3">washburne2018methods</bcf:citekey>
-    <bcf:citekey order="4">liang1986longitudinal</bcf:citekey>
-    <bcf:citekey order="5">geepack</bcf:citekey>
-    <bcf:citekey order="6">R</bcf:citekey>
-    <bcf:citekey order="7">chen2020generalized</bcf:citekey>
+    <bcf:citekey order="1">mayer2015gut</bcf:citekey>
+    <bcf:citekey order="2">washburne2018methods</bcf:citekey>
+    <bcf:citekey order="3">liang1986longitudinal</bcf:citekey>
+    <bcf:citekey order="4">geepack</bcf:citekey>
+    <bcf:citekey order="5">R</bcf:citekey>
+    <bcf:citekey order="6">chen2020generalized</bcf:citekey>
+    <bcf:citekey order="7">la2012hypothesis</bcf:citekey>
+    <bcf:citekey order="8">mayer2015gut</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">
