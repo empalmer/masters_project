@@ -59,7 +59,7 @@ geepack_fit_4 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data,
 # If we have a 'userdefined' correlation structure from zcor
 # At least, it will not run for me
 geepack_fit_zcor <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, 
-                      corstr = "userdefined", zcor = zcor, id = sample_id2, scale.fix = T)
+                      corstr = "userdefined", zcor = zcor, id = sample_id2)
 
 
 
