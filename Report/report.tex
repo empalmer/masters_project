@@ -5,8 +5,10 @@
 \usepackage{titlesec}
 \usepackage{amsmath,amsthm,amsfonts,mathtools,color,amssymb}
 \usepackage{tikz}
+\usepackage{graphicx}
 \usepackage{mathrsfs}
 \usepackage{biblatex}
+
 
 \titlespacing*{\section}
 {0pt}{.5em}{.5em}
@@ -161,16 +163,24 @@ In order to model the correlation structure between OTUs, the MTLC model uses th
 
 A taxonomic tree can be represented as a list containing counts of how many OTUs belong each subgroup of successive labels. The highest level should contain all $N$ OTUs, and the lowest level should contain $N$ groups, each with $1$ observation. Consider a taxonomic tree that represents the class, order, family, and genus taxonomic labels for five OTUs. The list \texttt{list(5, c(3,2), c(2,1,1,1), c(1,1,1,1,1))} represents the below tree, as the single class contains all 5 OTUs, the first Order group contains 3 OTUs, and the second contains 2, etc.
 
-\begin{singlespace}
-$$\includegraphics[width = .4\textwidth]{tree.png}
-\longrightarrow \Gamma = \begin{pmatrix}
-        1 & I & II & IV & IV \\
-        I & 1 & II & IV & IV \\
-        II & II & 1 & IV & IV \\
-        IV & IV & IV & 1 & III \\
-        IV & IV & IV & III & 1
-  \end{pmatrix}$$
-\end{singlespace}
+\begin{figure}
+\begin{minipage}{.5\textwidth}
+    \centering
+    \includegraphics[width = .8\textwidth]{tree.png}
+\end{minipage}%
+\begin{minipage}{0.5\textwidth}
+    \centering
+    $$ \Rightarrow  \Gamma =\begin{pmatrix}
+            1 & I & II & IV & IV \\
+            I & 1 & II & IV & IV \\
+            II & II & 1 & IV & IV \\
+            IV & IV & IV & 1 & III \\
+            IV & IV & IV & III & 1
+      \end{pmatrix} $$
+\end{minipage}
+\end{figure}
+
+
 
 The roman numerals represent the distinct correlations we assume for the working correlation matrix. In this example, correlation $I$ represents OTUs in the same family, but different genus, $II$ and $III$ represent same orders, but different families, and $IV$ represents different orders but the same class.
 
