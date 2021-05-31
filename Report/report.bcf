@@ -1982,7 +1982,9 @@
     <bcf:citekey order="5">R</bcf:citekey>
     <bcf:citekey order="6">chen2020generalized</bcf:citekey>
     <bcf:citekey order="7">la2012hypothesis</bcf:citekey>
-    <bcf:citekey order="8">mayer2015gut</bcf:citekey>
+    <bcf:citekey order="8">mandal2015analysis</bcf:citekey>
+    <bcf:citekey order="9">chen2020generalized</bcf:citekey>
+    <bcf:citekey order="10">mayer2015gut</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">
