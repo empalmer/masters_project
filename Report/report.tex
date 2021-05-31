@@ -93,7 +93,7 @@ The concept of a cluster will depend on the data setting, for instance we could 
 
 We additionally have a $p \times 1$ vector of covariates $x_{kj}$ measured for the $j$th value on each cluster $k$.The model of the GEE links the mean of the responses to the covariates through the following regression equation.
 $$g(\mu_{kj}) = \mathbf{x}_{kj}^T\boldsymbol \beta$$
-where $E(\mathbf{y_{kj}} = \mu_{kj}$ and $g(\cdot)$ is a known link function. The variance of the responses is $\text{Var}(Y_{kj}) = \phi a_{jk}$, where $\phi$ is the dispersion parameter and $a_{jk}$ is a known variance function determined by the distribution of the data. Let $R_k(\alpha)$ be the specified working correlation matrix, which is specified by the distinct values of $\alpha$, that describes the assumed within-cluster correlation structure. Define
+where $E(y_{kj}) = \mu_{kj}$ and $g(\cdot)$ is a known link function. The variance of the responses is $\text{Var}(Y_{kj}) = \phi a_{jk}$, where $\phi$ is the dispersion parameter and $a_{jk}$ is a known variance function determined by the distribution of the data. Let $R_k(\alpha)$ be the specified working correlation matrix, which is specified by the distinct values of $\alpha$, that describes the assumed within-cluster correlation structure. Define
 $$V_k = \phi A_k^{-1/2} R_{i(\alpha)}A_i^{1/2}$$ as the working covariance matrix of $Y_k$, where $A_k$ is the diagonal matrix consisting of the values of $a_{jk}$. Then, $\hat{\boldsymbol\beta}$ is the solution to the following Generalized Estimating Equation.
 $$\sum_{k=1}^K \frac{\partial  \mu_k^T }{\partial \beta } V_{k}^{-1} (Y_k - \mu_k) = 0 $$
 The above equation depends on the values of $\alpha$ and $\phi$, so these must additionally be estimated. The solution to the above equation is found using an iterative formula that switches between estimating $\hat\beta$ using given fixed $\hat \alpha, \hat \phi$ and estimating $\alpha,  \phi$ using given fixed $\beta$. GEEs work without specifying the joint distribution of observations, similarly to quasi-likelihood approaches.
@@ -212,24 +212,32 @@ Where each distinct integer represents a unique correlation. We can write $R = R
 
 \subsubsection{Two-part GEE model}
 
-The association between OTUs and covariates is modeled in two parts. Since OTU data is sparse, with excessive zeros, the presence/absence of an OTU is modeled separately from the relative abundance of the OTU. We assume each OTU observation $y_{kj}$ follows a mixture of Bernoulli and log-normal distributions that represent the presence of an OTU $y_{kj}^{(0)}$ and the (transformed) abundance $y_{kj}^{(+)}$.
+The association between OTUs and covariates is modeled in two parts. Since OTU data contains excessive zeros, the presence/absence of an OTU ($y_{kj}^{(0)}$)is modeled separately from the non-zero relative abundance of the OTU ($y_{kj}^{(+)}$). We assume each OTU observation $y_{kj}$ follows a mixture of Bernoulli and log-normal distributions. $P(y_{jk}^{(0)} = 1) = \mu_{kj}^{(0)}$, and $y_{kj}^{(+)} \sim N(\mu_{kj}^{(+)}, \sigma^2)$
 
-$$F(y) = \begin{cases}
-  1 - \mu_{kj}^{(0)} & y = 0\\
-  1 - \mu_{kj}^{(0)} + \mu_{kj}^{(0)}\Phi(\log_{10}(y)) & y > 0
-\end{cases}
-$$
+%  that represent the presence of an OTU $y_{kj}^{(0)}$ and the (transformed) abundance $y_{kj}^{(+)}$.
+%
+% $$F(y) = \begin{cases}
+%   1 - \mu_{kj}^{(0)} & y = 0\\
+%   1 - \mu_{kj}^{(0)} + \mu_{kj}^{(0)}\Phi(\log_{10}(y)) & y > 0
+% \end{cases}
+% $$
+%
+% Where
 
-Where $P(y_{jk}^{(0)} = 1) = \mu_{kj}^{(0)}$, and $y_{kj}^{(+)} \sim N(\mu_{kj}^{(+)}, \sigma^2)$
+To model these two responses separately, we specify the logit link function for the present/absent outcomes, and the identify link for the non-zero log transformed relative abundances, where the parameter estimates $\hat{\boldsymbol\beta}^{(0)}$ and $\hat{\boldsymbol\beta}^{(+)}$ are found using the GEEs described above.
 
-The first part of the model transforms OTU count to a presence/absence indication, where $y_{kj}^{(0)} = 1$ if OTU $j$ is present and uses GEES to estimate the association between OTU presence and the covariates of interest. Since this is a binary response, a logistic link function in the GEE framework would be appropriate.
-
-The second part transforms relative abundance by $\log_{10}$ so it is normally distributed. Since the transformed response is assumed to be normally distributed, an identity link function in the GEE model is used.
-
-$$\mu_{kj}^{(+)} = x_{kj}^t \beta^{(+)}$$
+$$\log \frac{\mu_{kj}^{(0)}}{1 - \mu_{kj}^{(0)}} = \mathbf{x}_{kj}^t \boldsymbol\beta^{(0)} \quad \text{and } \quad \mu_{kj}^{(+)} = \mathbf{x}_{kj}^t \boldsymbol\beta^{(+)}$$
 
 
-This scheme gives two parameter estimates for $\beta^{(+)}$ and $\beta^{(0)}$. To test the overall effect the covariates have on .... (FINISH)
+
+% The first part of the model transforms OTU count to a presence/absence indication, where $y_{kj}^{(0)} = 1$ if OTU $j$ is present and uses GEES to estimate the association between OTU presence and the covariates of interest. Since this is a binary response, a logistic link function in the GEE framework would be appropriate.
+
+% The second part transforms relative abundance by $\log_{10}$ so it is normally distributed. Since the transformed response is assumed to be normally distributed, an identity link function in the GEE model is used.
+%
+% $$\mu_{kj}^{(+)} = x_{kj}^t \beta^{(+)}$$
+%
+%
+% This scheme gives two parameter estimates for $\beta^{(+)}$ and $\beta^{(0)}$. To test the overall effect the covariates have on .... (FINISH)
 
 
 
