@@ -9,7 +9,7 @@
 \usepackage{biblatex}
 
 \titlespacing*{\section}
-{0pt}{1em}{1em}
+{0pt}{.5em}{.5em}
 \titlespacing*{\subsection}
 {0pt}{.5em}{.5em}
 \titlespacing*{\subsubsection}
@@ -34,9 +34,9 @@
 % Application of a recent method for microbiome association studies to larger datasets provided computational challenges.
 % \tableofcontents
 
-
-
+\begin{singlespace}
 \section{Introduction}
+\end{singlespace}
 
 \subsection{Microbiome data}
 The human gut contains millions of microbes. Genomic research on microbiome sequencing data has provided numerous insights to human health. Studies have associated the human gut microbiome to irritable bowel syndrome, inflammatory bowel disease, cancers, diabetes, and obesity, and shown the existence of bi-directional interactions  between the gut and the central nervous system \cite{kinross2008human, mayer2015gut}. These studies show the human microbiome to be a research rich and important area of focus.
@@ -86,7 +86,7 @@ Generalized Estimating Equations (GEEs) were introduced to extend generalized li
 
 
 First, we introduce some notation. A cluster $\mathbf{y}_k$ is the collection of points from repeated measures $\mathbf{y}_k = (y_{k,1}, \ldots , y_{k,n_j})$ taken from a subject, or individual, $k$ where $k = 1, \ldots , K$ represents the index of clusters/individual, and $j = 1, \ldots , n_k$ represent the different repeated measures taken, for instance, values on different  time points, sample sites, or OTU measurements, or any other given repeated measurement taken on a cluster.
-The concept of a cluster will depend on the data setting, for instance we could even consider a family as the cluster designation. For instance, consider the response variable for a family $k$, measured on two family members (perhaps twins), on 2 days and 2 OTU measurements. Then $\mathbf{y}_k = (y_{k, f_1,t_1,1}, y_{k, f_1,t_1,2}, y_{k, f_1,t_2,1}, y_{k, f_1,t_1,2},y_{k, f_2,t_1,1}, y_{k, f_2,t_1,2}, y_{k, f_2,t_2,1}, y_{k, f_2,t_1,2})$, where $f_i$ represents the family index, $t_i$, represents the time index, and $o_i$ represents the OTU index.
+The concept of a cluster will depend on the data setting, for instance we could even consider a family as the cluster designation. For instance, consider the response variable for a family $k$, measured on two family members ($f_1,f_2$), on 2 days $(t_1,t_2)$ and 2 OTU measurements $(o_1,o_2)$. Then $\mathbf{y}_k = (y_{k, f_1,t_1,o_1}, y_{k, f_1,t_1,0_2}, y_{k, f_1,t_2,o_1}, y_{k, f_1,t_1,o_2},y_{k, f_2,t_1,o_1}, y_{k, f_2,t_1,o_2}, y_{k, f_2,t_2,o_1}, y_{k, f_2,t_1,o_2})$.
 % For instance, if individual $\mathbf{y}_1$ was sampled on three different days, $\mathbf{y}_1 = (y_{1,1}, y_{1,2}, y_{1,3})$ represent the response value for individual $1$ on the 3 different days. Alternatively, this could represent if we sampled values of 3 different OTUs, instead of 3 different days.
 
 We additionally have a $p \times 1$ vector of covariates $x_{kj}$ measured for the $j$th value on each cluster $k$.The model of the GEE links the mean of the responses to the covariates through the following regression equation.
@@ -110,50 +110,51 @@ The \texttt{geepack} package\cite{geepack} in R \cite{R} provides a useful way t
 There are four main pre-specified working correlation matrix structures in \texttt{geeglm}: independence, exchangeable, AR1, and unstructured. Specifying a user-defined correlation structure is also possible, although seems much less common in applications than using the pre-defined structures. The format of the user-defined correlation structure \texttt{zcor} is different than the working correlation matrix defined above the GEE framework. The GEE working correlation matrix $R_k(\alpha)$ is a square matrix that has the same dimension as the length of $\mathbf{y}_k$ for the $k$th cluster. In contrast, \texttt{zcor} uses the upper diagonal correlation parameters of the working correlation matrix $r_k = (r_{k, 12}, r_{k,13}, \ldots , r_{k,1n_k}, r_{k,23}, \ldots , r_k{k,n_{k-1}n_k})$ of $R_{k}(\alpha)$ . The \texttt{zcor} $Z_k$ matrix for cluster $k$ comes from $r_k = Z_k \alpha$. The overall \texttt{zcor} matrix comes from combining these matrices $(Z_1^t, \ldots , Z_K^t)^t$. This matrix will have dimension $\sum_{k=1}^K \binom{n_k}{2} \times m$, where $m$ is the length of $\alpha$.
 
 
+\begin{singlespace}
+  \section{Microbiome Taxonomic Longitudinal Correlation (MTLC) model}
+\end{singlespace}
 
-\section{Microbiome Taxonomic Longitudinal Correlation (MTLC) model}
 
 The Microbiome Taxonomic Longitudinal Correlation (MTLC) model was introduced in 2020 by Chen and Xu\cite{chen2020generalized} as a way to estimate correlations between OTUs as well as associations between OTU responses and covariates, that can be used on longitudinal and repeated measure data. Coefficients are estimated using a two part GEE model that uses a correlation structure based on OTU taxonomy and longitudinal and repeated measure correlations.
 
 
-
-\subsection{Model Data structure}
-Commonly, OTU information is stored in two tables, an OTU table and a metadata table. The rows of the OTU table are the OTU ids, and the columns are the samples. In the metadata table, the rows are samples. Consider a dataset with $K$ individuals;  Each individual has $N$ OTU measurements, and each of these measurements are taken $L$ different repeated measures. In this model, the response is the OTU value (either presence absence, or transformed relative abundance). Both the response, and predictors, must be transformed into a 'long' format.
+%
+% \subsection{Model Data structure}
+% Commonly, OTU information is stored in two tables, an OTU table and a metadata table. The rows of the OTU table are the OTU ids, and the columns are the samples. In the metadata table, the rows are samples. Consider a dataset with $K$ individuals;  Each individual has $N$ OTU measurements, and each of these measurements are taken $L$ different repeated measures. In this model, the response is the OTU value (either presence absence, or transformed relative abundance). Both the response, and predictors, must be transformed into a 'long' format.
 
 % The first table contains counts for OTU values, with OTU labels as rows and samples as columns. This table will have overall dimension $N \times M$ The second table contains metadata (predictor) information, with samples as rows and predictor values as columns, having dimension $M \times p$.
 
 
 % If there are $N$ OTUs recorded, the response is given as $\mathbf{y} = (\mathbf{y}_1, \ldots, \mathbf{y}_K)^t$, where for a given individual/cluster $\mathbf{y}_k = (y_{k,1}, \ldots, y_{k,n_k})$. The vector of covariates for a given $k,j$ has length $p$.
+%
+% Consider a small example, where there is only one subject, measured at two time points, for two OTUs. The table on the right represents the OTU table, which is then transformed into the form we need for the model.
+% \begin{singlespace}
+% $$
+% \begin{array}{c| c c}
+%   & S_1,T_1 & S_1,T_2\\
+%   \hline
+%   OTU_1 & y_{S_1,T_1,OTU_1} & y_{S1,T2,OTU1}\\
+%   OTU_2 & y_{S1,T1,OTU2} & y_{S1,T2,OTU2}\\
+% \end{array}
+% \qquad \Rightarrow \qquad
+% \mathbf{y} = \begin{pmatrix}
+%     y_{S1,T1,OTU1}\\
+%     y_{S1,T1,OTU2}\\
+%     y_ {S1,T2,OTU1}\\
+%     y_{S1,T1,OTU2}
+% \end{pmatrix} \quad
+% \mathbf{x} = \begin{pmatrix}
+%       x_{S1,T1}\\
+%       x_{S1,T1}\\
+%       x_{S1,T2}\\
+%       x_{S1,T2}
+% \end{pmatrix}
+% $$
+% \end{singlespace}
+Consider again the cluster $\mathbf{y}_k$ described above, from measurements on two family members ($f_1,f_2$), on two days ($t_1, t_2$) on two OTUs $(o_1,o_2)$. The observations in $\mathbf{y}_k$ are not independent. There exist possible correlations between the family members, time points, as well as possible correlations between the OTUs measured, and any combination. The following sections will explain how these types of correlations are incorporated into GEE models.
 
-Consider a small example, where there is only one subject, measured at two time points, for two OTUs. The table on the right represents the OTU table, which is then transformed into the form we need for the model.
-\begin{singlespace}
-$$
-\begin{array}{c| c c}
-  & S_1,T_1 & S_1,T_2\\
-  \hline
-  OTU_1 & y_{S_1,T_1,OTU_1} & y_{S1,T2,OTU1}\\
-  OTU_2 & y_{S1,T1,OTU2} & y_{S1,T2,OTU2}\\
-\end{array}
-\qquad \Rightarrow \qquad
-\mathbf{y} = \begin{pmatrix}
-    y_{S1,T1,OTU1}\\
-    y_{S1,T1,OTU2}\\
-    y_ {S1,T2,OTU1}\\
-    y_{S1,T1,OTU2}
-\end{pmatrix} \quad
-\mathbf{x} = \begin{pmatrix}
-      x_{S1,T1}\\
-      x_{S1,T1}\\
-      x_{S1,T2}\\
-      x_{S1,T2}
-\end{pmatrix}
-$$
-\end{singlespace}
-The observations in $\mathbf{y}$ are now not independent. There exist possible correlations between the time points, as well as possible correlations between the OTUs measured. The following sections will explain how these two types of correlations are incorporated into GEE models.
-
-\subsection{Accounting for Correlation}
-\subsubsection{Taxa correlation}
-
+\subsection{Correlation structure }
+\subsubsection{Taxanomic correlation}
 Previous studies considering the correlations between OTUs have used a Dirichlet multinomial distribution \cite{la2012hypothesis}. However, this assumes a negative correlation between OTUs, which can be reasonable given the compositional nature of the data,. However, the true correlation structure between OTUs can be positive or negative\cite{mandal2015analysis}, and we want to build models that can account for this flexibility depending on the nature of how given OTUs interact.
 
 In order to model the correlation structure between OTUs, the MTLC model uses the taxonomic information hierarchy of each OTU to specify the OTU correlation aspect of the working correlation matrix used in GEE estimation, denoted $\Gamma$. In order to reduce from an unspecified correlation matrix, where each OTU has a different correlation (which becomes infeasible to model), we impose the assumption that OTUs have the same correlation if the first shared higher level taxa is the same. Determining the unique correlations will depend on the structure of the taxonomic tree. We will then represent the correlation information from the taxonomic tree into a correlation matrix that keeps track of which correlations are the same.
@@ -174,9 +175,7 @@ $$\includegraphics[width = .4\textwidth]{tree.png}
 The roman numerals represent the distinct correlations we assume for the working correlation matrix. In this example, correlation $I$ represents OTUs in the same family, but different genus, $II$ and $III$ represent same orders, but different families, and $IV$ represents different orders but the same class.
 
 
-
 \subsubsection{Longitudinal and repeated measure correlation}
-
 Additional correlations in the data occur from repeated measures. A common form of repeated measure comes from measurements at different discrete time points. Auto-regressive, Toeplitz, unstructured, exchangeable, and independent are all common correlation structures that can be can be used on longitudinal data. Each of these structures gives a working correlation matrix that indicates the distinct correlation between points. Any of these can be used for longitudinal repeated measures in this model. If there are additional repeated measures in the data besides those from longitudinal measures, the repeated measure working correlation matrix is found by taking all combinations of time points and repeated samples into one repeated measure working correlation matrix. If we have $T$ time points and $S$ different additional repeated measures, the repeated measure working correlation matrix $\Omega$ has dimension $(T \cdot S) \times (T \cdot S ) $
 
 \subsubsection{Integrative correlation matrix }
@@ -199,7 +198,7 @@ $$R = \begin{pmatrix}
         10 & 10 & 10  & 9 & 6  & 5 & 5 & 5 & 4 & 1
   \end{pmatrix}$$
 \end{singlespace}
-Where each distinct integer represents a unique correlation. We can write $R = R(\alpha)$, where $\alpha = 1:10$. For instance, correlation 6 represents the correlation between $OTU_1$ and $OUT_2$ between the two time points sampled.
+Where each distinct integer represents a unique correlation. We can write $R = R(\alpha)$, where $\alpha = 1:10$. For instance, correlation 6 represents the correlation between $OTU_1$ and $OTU_2$ between the two time points sampled.
 
 \subsubsection{Two-part GEE model}
 
