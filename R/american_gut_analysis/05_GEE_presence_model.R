@@ -43,23 +43,41 @@ filtered_data <- filtered_data %>%
 library(geepack)
 # Try the other "simpler" correlation structures built in to geepack
 # These all will run in a reasonable amount of time. (< 1m) 
-geepack_fit_1 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
-                      corstr = "independence")
-geepack_fit_2 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
-                        corstr = "exchangeable")
-geepack_fit_3 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
+#geepack_fit_1 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
+#                      corstr = "independence")
+#geepack_fit_2 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
+#                        corstr = "exchangeable")
+#geepack_fit_3 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
                         corstr = "ar1")
-summary(geepack_fit_1)
+#summary(geepack_fit_1)
 
 # Try the unstructured correlation structure, which should be more complicated than userdefined 
-geepack_fit_4 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
-                        corstr = "unstructured")
+#geepack_fit_4 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
+#                        corstr = "unstructured")
+# If we have a 'userdefined' correlation structure from zcor
+# At least, it will not run for me
+#geepack_fit_zcor <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, 
+#                      corstr = "userdefined", zcor = zcor, id = sample_id2)
 
 
 # If we have a 'userdefined' correlation structure from zcor
-# At least, it will not run for me
+# Time and save model output 
+start_time <- proc.time()
 geepack_fit_zcor <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, 
-                      corstr = "userdefined", zcor = zcor, id = sample_id2)
+                           corstr = "userdefined", zcor = zcor, id = sample_id2)
+end_time <- proc.time()
+diff <- end_time - start_time
+write_rds(diff, here::here("R","american_gut_analysis","logistic_age_time.rds"))
+write_rds(geepack_fit_zcor,here::here("R","american_gut_analysis","logistic_age_gee_mod.rds") )
+
+
+
+
+
+
+
+
+
 
 
 
@@ -68,10 +86,9 @@ geepack_fit_zcor <- geeglm(presence ~ AGE, family = binomial, data = filtered_da
 # matrix for userdefined 
 # Seems a LOT slower. Won't even run with independence structure...
 # (or takes > 5 min to run, I've always stopped it after 5 min)
-library(geeM)
+#library(geeM)
 
-geem_fit <- geem(presence ~ AGE, data = filtered_data, family = binomial, id = sample_id,
-     corstr = "independence")
+#geem_fit <- geem(presence ~ AGE, data = filtered_data, family = binomial, id = sample_id,     corstr = "independence")
 
 # Since it takes so long for independence, I havent tried the userdefined option
 #geem(presence ~ AGE, data = filtered_data, family = binomial, id = sample_id,
