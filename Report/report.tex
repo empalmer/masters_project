@@ -7,6 +7,7 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{mathrsfs}
+
 \usepackage{biblatex}
 
 
@@ -17,6 +18,8 @@
 \titlespacing*{\subsubsection}
 {0pt}{.25em}{.25em}
 
+
+% Better title
 \title{Masters Project Report}
 \author{Emily Palmer}
 \date{Spring 2021}
@@ -32,6 +35,8 @@
   The Microbiome Taxonomic Longitudinal Correlation, a recent model for microbiome association studies, was explored in detail and code was developed for application in general datasets beyond the case study provided in the initial paper. Applications of this method provided computational challenges when the scale of the data is beyond a small number of selected OTUs.
 \end{abstract}
 
+% Add more of what I did in the abstract?
+
 % Several aspects of the method to more general data were developed for use beyond the case study provided in the initial paper.
 % Application of a recent method for microbiome association studies to larger datasets provided computational challenges.
 % \tableofcontents
@@ -41,17 +46,19 @@
 \end{singlespace}
 
 \subsection{Microbiome data}
-The human gut contains millions of microbes. Genomic research on microbiome sequencing data has provided numerous insights to human health. Studies have associated the human gut microbiome to irritable bowel syndrome, inflammatory bowel disease, cancers, diabetes, and obesity, and shown the existence of bi-directional interactions  between the gut and the central nervous system \cite{kinross2008human, mayer2015gut}. These studies show the human microbiome to be a research rich and important area of focus.
+The human gut contains millions of microbes. Research on microbiome sequencing data has provided numerous insights about human health. Studies have associated the human gut microbiome to inflammatory bowel disease, cancers, diabetes, and obesity, and shown the existence of bi-directional interactions between the gut and the central nervous system \cite{kinross2008human, mayer2015gut}. These studies show the human microbiome to be a research rich and important area of focus.
+%These studies show the potential important
 % Characteristics of these data make these data difficult to analyze using standard statistical methods, so there is also needed work to develop or alter the statistical approaches used for this type of data.
 
 
-Microbiome data commonly arises from 16S ribosomal ribonucleic acid RNA (16s rRna) sequencing studies. This gene is a useful marker for microbe identification.  Microbiome sequencing data commonly consists of the count of reads on operational taxonomic units (OTUs) for each sample. Operational taxonomic units refer to the bins in which sequences are grouped, and are frequently mapped back to taxonomic labels from existing libraries. Methods for microbiome analysis can either be focused on a single OTU or multiple OTUs simultaneously.
+Microbiome sequencing studies commonly focus on 16S ribosomal ribonucleic acid (16s rRNA). This gene is a useful marker for microbe identification. Microbiome sequencing data commonly consists of the count of reads on operational taxonomic units (OTUs) for each sample. Operational taxonomic units refer to the bins in which sequences are grouped, and are frequently mapped back to taxonomic labels from existing libraries. Methods for microbiome analysis can either be focused on a single OTU or multiple OTUs simultaneously.
 
-% Microbiome sample can be collected from fecal samples, but oral, skin, vaginal, etc are also common areas (CITE).
 
 There are several aspects common to microbiome OTU data that present obstacles to analysis using standard statistical approaches. The number of OTUs is often very large compared to the sample size. The value of the count for a given OTU is dependent on the sampling depth for the given sample (the sum of all OTUs across the sample). This sampling depth is not originally constant across samples, so  normalization is necessary before counts can be compared across samples. This can be done by rarifying, or randomly sampling OTUs to standardize the sampling depth across samples. Often, OTU counts are converted into a proportion to represent the relative abundance of that OTU in the sample.
 
-Additionally, OTU data is very sparse, with many samples having zero counts across multiple OTUs. Thus microbiome data contains excessive zeros, which much be accounted for in the analysis. Common adjustments are either to use models based on zero inflated distributions, or two-part models that separately model the presence of an OTU and the abundance (or relative abundance) of present OTUs.
+% provide a citation for rarifying
+
+Additionally, OTU data are very sparse, with many samples having zero counts across multiple OTUs. Thus microbiome data contains excessive zeros, which much be accounted for in the analysis. Common adjustments are either to use models based on zero inflated distributions, or two-part models that separately model the presence of an OTU and the abundance (or relative abundance) of present OTUs.
 
 
 % The library size of different samples can vary.
@@ -68,10 +75,12 @@ Additionally, OTU data is very sparse, with many samples having zero counts acro
 
 \subsubsection{Taxonomic tree for OTUs}
 
-Two types of trees can arise in microbial studies: phylogenetic trees and taxonomic trees. Phylogenetic trees estimate the evolutionary history between organisms by splitting of a tree to represent shared ancestors. Taxonomic trees represent the hierarchy of shared labels of different classified taxa levels: Kingdom, Phylum, Class, Order, Family, Genus, and Species. Ideally, these two trees should be equivalent, but this requires explicit naming and organizing of each bacterial species, which is an imposing and incomplete task. The taxonomic labeling system is coarse for microbial species, and new discoveries and changing naming systems will change its structure \cite{washburne2018methods}. This project will focus on taxonomic trees.
+Two types of trees can arise in microbial studies: phylogenetic trees and taxonomic trees. Phylogenetic trees  are an estimate of the evolutionary history between organisms by splitting of a tree to represent shared ancestors. Taxonomic trees represent the hierarchy of shared labels of different classified taxa levels: Kingdom, Phylum, Class, Order, Family, Genus, and Species. Ideally, these two trees should be equivalent, but this requires explicit naming and organizing of each bacterial species, which is an imposing and incomplete task. The taxonomic labeling system is coarse for microbial taxa, and new discoveries and changing naming systems will change its structure \cite{washburne2018methods}. This project will focus on taxonomic trees.
 
-% (FIND ANOTHER SOURCE )
-When association studies are performed using multiple OTUs, it can be reasonable to use prior knowledge on the given evolutionary or hierarchical organizational relationship between multiple OTUs. Potentially, evolutionally relationships might correspond to similar relationships between the OTU expression, and chosen covariates. If a certain OTU is found to be associated with a covariate, we might expect another OTU that is close on the taxonomic tree to   also be associated with a covariate, and associated in a similar way. Broadly, we want to use the knowledge of the placement of a given OTU on the taxonomic tree to provide insight into correlations that exist between different read counts present in samples. Hopefully this correlation can be helpful in modeling overall association with predictors of interest.
+% make this transition better - explain why taxonomic trees
+% define/explain association studies
+
+When association studies are performed using multiple OTUs, it can be reasonable to use prior knowledge on the given evolutionary or hierarchical organizational relationship between multiple OTUs. Potentially, evolutionally relationships correspond to similar relationships between OTU expression and chosen covariates. If a certain OTU is found to be associated with a covariate, we might expect another OTU that is close on the taxonomic tree to  also be associated with a covariate, and associated in a similar way. Broadly, we want to use the knowledge of the placement of a given OTU on the taxonomic tree to provide insight into correlations that exist between different read counts present in samples. Hopefully this correlation can be helpful in modeling overall association with predictors of interest.
 
 
 
@@ -88,36 +97,35 @@ Generalized Estimating Equations (GEEs) were introduced to extend generalized li
 
 
 First, we introduce some notation. A cluster $\mathbf{y}_k$ is the collection of points from repeated measures $\mathbf{y}_k = (y_{k,1}, \ldots , y_{k,n_j})$ taken from a subject, or individual, $k$ where $k = 1, \ldots , K$ represents the index of clusters/individual, and $j = 1, \ldots , n_k$ represent the different repeated measures taken, for instance, values on different  time points, sample sites, or OTU measurements, or any other given repeated measurement taken on a cluster.
-The concept of a cluster will depend on the data setting, for instance we could even consider a family as the cluster designation. For instance, consider the response variable for a family $k$, measured on two family members ($f_1,f_2$), on 2 days $(t_1,t_2)$ and 2 OTU measurements $(o_1,o_2)$. Then $\mathbf{y}_k = (y_{k, f_1,t_1,o_1}, y_{k, f_1,t_1,0_2}, y_{k, f_1,t_2,o_1}, y_{k, f_1,t_1,o_2},y_{k, f_2,t_1,o_1}, y_{k, f_2,t_1,o_2}, y_{k, f_2,t_2,o_1}, y_{k, f_2,t_1,o_2})$.
+The concept of a cluster will depend on the data setting, for instance we could even consider a family of related individuals as the cluster designation. For instance, consider the response variable for a family $k$, measured on two family members ($f_1,f_2$), on 2 days $(t_1,t_2)$ and 2 OTU measurements $(o_1,o_2)$. Then $\mathbf{y}_k = (y_{k, f_1,t_1,o_1}, y_{k, f_1,t_1,o_2}, y_{k, f_1,t_2,o_1}, y_{k, f_1,t_1,o_2},y_{k, f_2,t_1,o_1}, y_{k, f_2,t_1,o_2}, y_{k, f_2,t_2,o_1}, y_{k, f_2,t_1,o_2})$.
 % For instance, if individual $\mathbf{y}_1$ was sampled on three different days, $\mathbf{y}_1 = (y_{1,1}, y_{1,2}, y_{1,3})$ represent the response value for individual $1$ on the 3 different days. Alternatively, this could represent if we sampled values of 3 different OTUs, instead of 3 different days.
 
-We additionally have a $p \times 1$ vector of covariates $x_{kj}$ measured for the $j$th value on each cluster $k$.The model of the GEE links the mean of the responses to the covariates through the following regression equation.
+We additionally have a $p \times 1$ vector of covariates $x_{kj}$ measured for the $j$th value on each cluster $k$. The GEE model links the mean of the responses to the covariates through the following regression equation.
 $$g(\mu_{kj}) = \mathbf{x}_{kj}^T\boldsymbol \beta$$
-where $E(y_{kj}) = \mu_{kj}$ and $g(\cdot)$ is a known link function. The variance of the responses is $\text{Var}(Y_{kj}) = \phi a_{jk}$, where $\phi$ is the dispersion parameter and $a_{jk}$ is a known variance function determined by the distribution of the data. Let $R_k(\alpha)$ be the specified working correlation matrix, which is specified by the distinct values of $\alpha$, that describes the assumed within-cluster correlation structure. Define
-$$V_k = \phi A_k^{-1/2} R_{i(\alpha)}A_i^{1/2}$$ as the working covariance matrix of $Y_k$, where $A_k$ is the diagonal matrix consisting of the values of $a_{jk}$. Then, $\hat{\boldsymbol\beta}$ is the solution to the following Generalized Estimating Equation.
-$$\sum_{k=1}^K \frac{\partial  \mu_k^T }{\partial \beta } V_{k}^{-1} (Y_k - \mu_k) = 0 $$
-The above equation depends on the values of $\alpha$ and $\phi$, so these must additionally be estimated. The solution to the above equation is found using an iterative formula that switches between estimating $\hat\beta$ using given fixed $\hat \alpha, \hat \phi$ and estimating $\alpha,  \phi$ using given fixed $\beta$. GEEs work without specifying the joint distribution of observations, similarly to quasi-likelihood approaches.
+where $E(y_{kj}) = \mu_{kj}$ and $g(\cdot)$ is a known link function. The variance of the responses is $\text{Var}(Y_{kj}) = \phi a_{kj}$, where $\phi$ is the dispersion parameter and $a_{jk}$ is a known variance function determined by the distribution of the data. Let $R_k(\alpha)$ be the specified working correlation matrix, which is specified by the distinct values of $\alpha$, that describes the assumed within-cluster correlation structure. Define
+$$V_k = \phi A_k^{-1/2} R_{k}(\alpha)A_k^{1/2}$$ as the working covariance matrix of $Y_k$, where $A_k$ is the diagonal matrix consisting of the values of $a_{kj}$. Then, $\hat{\boldsymbol\beta}$ is the solution to the following Generalized Estimating Equation.
+$$\sum_{k=1}^K \frac{\partial  \boldsymbol\mu_k^T }{\partial \boldsymbol\beta } V_{k}^{-1} (Y_k - \mu_k) = 0 $$
+The above equation depends on the values of $\alpha$ and $\phi$, so these must additionally be estimated. The solution to the above equation is found using an iterative formula that switches between estimating $\hat{\boldsymbol\beta}$ using given fixed $\hat \alpha, \hat \phi$ and estimating $\alpha,  \phi$ using given fixed $\boldsymbol\beta$. GEEs work without specifying the joint distribution of observations, similar to quasi-likelihood approaches.
 
 One useful characteristic of GEEs is that the parameter estimation of $\beta$ is consistent, even if the working correlation matrix is misspecified. The estimate $\hat{\boldsymbol\beta}$ is asymptotically normally distributed with mean $\boldsymbol\beta$ and variance
-$$ \big(\sum_{k=1}^K  \frac{\partial  \mu_k^T }{\partial \beta } V_k^{-1} \frac{\partial  \mu_k }{\partial \beta^T } \big)^{-1} \bigg(\sum_{k=1}^K  \frac{\partial  \mu_k^T }{\partial \beta } V_k^{-1}\text{COV}(Y_i)V_{k}^{-1}  \frac{\partial  \mu_k }{\partial \beta^T } \bigg)\big(\sum_{k=1}^K  \frac{\partial  \mu_k^T }{\partial \beta } V_k^{-1} \frac{\partial  \mu_k }{\partial \beta^T } \big)^{-1}$$
+$$ \big(\sum_{k=1}^K  \frac{\partial  \boldsymbol{\mu}_k^T }{\partial \beta } V_k^{-1} \frac{\partial  \mu_k }{\partial \beta^T } \big)^{-1} \bigg(\sum_{k=1}^K  \frac{\partial  \boldsymbol\mu_k^T }{\partial \boldsymbol\beta } V_k^{-1}\text{COV}(Y_i)V_{k}^{-1}  \frac{\partial  \boldsymbol\mu_k }{\partial \boldsymbol\beta^T } \bigg)\big(\sum_{k=1}^K  \frac{\partial  \boldsymbol\mu_k^T }{\partial \boldsymbol\beta } V_k^{-1} \frac{\partial  \boldsymbol\mu_k }{\partial \boldsymbol\beta^T } \big)^{-1}$$
 Where $\text{COV}(Y_k)$ is the true covariance matrix of $\mathbf{y}_k$
 
-If we replace $ \boldsymbol\beta, \phi, \alpha$ and $\text{COV}(Y_k)$ with $\hat\beta, \hat \alpha, \hat \phi$ and $(Y_k - \mu_k)(Y_k- \mu_k)^T$ this gives us the sandwich estimator, a constant estimator for the variance of $\boldsymbol\beta$.
+If we replace $ \boldsymbol\beta, \phi, \alpha$ and $\text{COV}(Y_k)$ with $\hat{\boldsymbol\beta}, \hat \alpha, \hat \phi$ and $(Y_k - \mu_k)(Y_k- \mu_k)^T$ this gives us the sandwich estimator, a constant estimator for the variance of $\boldsymbol\beta$.
 
 
 \subsubsection{GEEs in R}
 
-The \texttt{geepack} package\cite{geepack} in R \cite{R} provides a useful way to implement GEEs with a user defined working correlation structure, denoted \texttt{zcor}. The function \texttt{geeglm()} fits a GEE from the specified regression formula, link function, and correlation structure, similarly to the standard \texttt{glm()} function call.
+The \texttt{geepack} package \cite{geepack} in R \cite{R} provides a useful way to implement GEEs with a user defined working correlation structure, denoted \texttt{zcor}. The function \texttt{geeglm()} fits a GEE from the specified regression formula, link function, and correlation structure, similarly to the standard \texttt{glm()} function call.
 
-There are four main pre-specified working correlation matrix structures in \texttt{geeglm}: independence, exchangeable, AR1, and unstructured. Specifying a user-defined correlation structure is also possible, although seems much less common in applications than using the pre-defined structures. The format of the user-defined correlation structure \texttt{zcor} is different than the working correlation matrix defined above the GEE framework. The GEE working correlation matrix $R_k(\alpha)$ is a square matrix that has the same dimension as the length of $\mathbf{y}_k$ for the $k$th cluster. In contrast, \texttt{zcor} uses the upper diagonal correlation parameters of the working correlation matrix $r_k = (r_{k, 12}, r_{k,13}, \ldots , r_{k,1n_k}, r_{k,23}, \ldots , r_k{k,n_{k-1}n_k})$ of $R_{k}(\alpha)$ . The \texttt{zcor} $Z_k$ matrix for cluster $k$ comes from $r_k = Z_k \alpha$. The overall \texttt{zcor} matrix comes from combining these matrices $(Z_1^t, \ldots , Z_K^t)^t$. This matrix will have dimension $\sum_{k=1}^K \binom{n_k}{2} \times m$, where $m$ is the length of $\alpha$.
+There are four main pre-specified working correlation matrix structures in \texttt{geeglm}: independence, exchangeable, AR1, and unstructured. Specifying a user-defined correlation structure is also possible, although seems much less common in applications than using the pre-defined structures. The format of the user-defined correlation structure \texttt{zcor} is different than the working correlation matrix defined above the GEE framework. The GEE working correlation matrix $R_k(\alpha)$ is a square matrix that has the same dimension as the length of $\mathbf{y}_k$ for the $k$th cluster. In contrast, \texttt{zcor} uses the upper diagonal correlation parameters of the working correlation matrix $r_k = (r_{k, 1,2}, r_{k,1,3}, \ldots , r_{k,1,n_k}, r_{k,2,3}, \ldots , r_k{k,n_{k-1},n_k})$ of $R_{k}(\alpha)$ . The \texttt{zcor} $Z_k$ matrix for cluster $k$ comes from $r_k = Z_k \alpha$. The overall \texttt{zcor} matrix comes from combining these matrices $(Z_1^t, \ldots , Z_K^t)^t$. This matrix will have dimension $\sum_{k=1}^K \binom{n_k}{2} \times m$, where $m$ is the length of $\alpha$.
 
 
 \begin{singlespace}
   \section{Microbiome Taxonomic Longitudinal Correlation (MTLC) model}
 \end{singlespace}
 
-
-The Microbiome Taxonomic Longitudinal Correlation (MTLC) model was introduced in 2020 by Chen and Xu\cite{chen2020generalized} as a way to estimate correlations between OTUs as well as associations between OTU responses and covariates, that can be used on longitudinal and repeated measure data. Coefficients are estimated using a two part GEE model that uses a correlation structure based on OTU taxonomy and longitudinal and repeated measure correlations.
+The Microbiome Taxonomic Longitudinal Correlation (MTLC) model was introduced in 2020 by Chen and Xu\cite{chen2020generalized} as a way to estimate correlations between OTUs as well as associations between OTU responses and covariates, that can be used on longitudinal and repeated measure data. Coefficients are estimated using a two part GEE model that uses a correlation structure based on OTU taxonomic hierarchy as well as longitudinal and repeated measure correlations.
 
 
 %
@@ -157,11 +165,14 @@ Consider again the cluster $\mathbf{y}_k$ described above, from measurements on 
 
 \subsection{Correlation structure }
 \subsubsection{Taxanomic correlation}
-Previous studies considering the correlations between OTUs have used a Dirichlet multinomial distribution \cite{la2012hypothesis}. However, this assumes a negative correlation between OTUs, which can be reasonable given the compositional nature of the data,. However, the true correlation structure between OTUs can be positive or negative\cite{mandal2015analysis}, and we want to build models that can account for this flexibility depending on the nature of how given OTUs interact.
+Previous studies considering the correlations between OTUs have used a Dirichlet multinomial distribution \cite{la2012hypothesis}, which assumes a negative correlation between OTUs. However, the true correlation structure between OTUs can be positive or negative\cite{mandal2015analysis}, and we want to build models that can account for this flexibility depending on the nature of how given OTUs interact.
 
-In order to model the correlation structure between OTUs, the MTLC model uses the taxonomic information hierarchy of each OTU to specify the OTU correlation aspect of the working correlation matrix used in GEE estimation, denoted $\Gamma$. In order to reduce from an unspecified correlation matrix, where each OTU has a different correlation (which becomes infeasible to model), we impose the assumption that OTUs have the same correlation if the first shared higher level taxa is the same. Determining the unique correlations will depend on the structure of the taxonomic tree. We will then represent the correlation information from the taxonomic tree into a correlation matrix that keeps track of which correlations are the same.
+%In order to model the correlation structure between OTUs,
+The MTLC model uses the taxonomic information hierarchy of each OTU to specify the OTU correlation component, denoted $\Gamma$, of the working correlation matrix used in GEE estimation. In order to reduce from an unspecified correlation matrix, where each OTU has a different correlation (which becomes infeasible to model), we impose the assumption that OTUs have the same correlation if the first shared higher level taxa is the same. Determining the unique correlations will depend on the structure of the taxonomic tree. We will then represent the correlation information from the taxonomic tree into a correlation matrix that keeps track of which correlations are the same.
 
-A taxonomic tree can be represented as a list containing counts of how many OTUs belong each subgroup of successive labels. The highest level should contain all $N$ OTUs, and the lowest level should contain $N$ groups, each with $1$ observation. Consider a taxonomic tree that represents the class, order, family, and genus taxonomic labels for five OTUs. The list \texttt{list(5, c(3,2), c(2,1,1,1), c(1,1,1,1,1))} represents the below tree, as the single class contains all 5 OTUs, the first Order group contains 3 OTUs, and the second contains 2, etc.
+% Insert reference to below example
+
+A taxonomic tree can be represented as a list containing counts of how many OTUs belong each subgroup of successive labels. The highest level should contain all $N$ OTUs, and the lowest level should contain $N$ groups, each with $1$ observation. Consider a taxonomic tree that represents the class, order, family, and genus taxonomic labels for five OTUs as illustrated below. The list \texttt{list(5, c(3,2), c(2,1,1,1), c(1,1,1,1,1))} represents this tree, as the single class contains all 5 OTUs, the first order group contains 3 OTUs, and the second contains 2, and so following.
 
 \begin{figure}
 \begin{minipage}{.5\textwidth}
@@ -248,7 +259,7 @@ The MTLC paper described above \cite{chen2020generalized} provided code for thei
 \subsection{Incomplete clusters}
 The above explanation of how to build the working correlation matrix assumes that all clusters have equal size/length. In other words, each individual/cluster needs to have the same number of OTUs measured and the same number/type of repeated samples. However, in practice this is rarely the case; each individual may not be measured the same number of times, and each OTU is rarely present each sample. Even if we did have balanced clusters in the presence/absence model, due to the sparse nature of OTUs, it is likely that the relative abundance model will have essentially 'missing' data for OTUs that are not present in a given sample, resulting in unequal cluster sizes.
 
-The function \texttt{geeglm()} can account for missing or \texttt{NA} data values in the response or covariate columns. However, both the integrative correlation matrix and the \texttt{zcor} matrix must be adjusted to remove the corresponding entries. For each cluster $k = 1, \ldots , N$, we make this adjustment by finding the expected OTU/repeated measure/time combinations that are missing in the given cluster, replacing all entries of the corresponding row and column of the working integrative correlation matrix with a replacement dummy value (e.g. -2). The corresponding $\texttt{zcor}_k$ matrix was created using the upper triangular values of $R_k$, and then filtered to remove all rows that contained the dummy value. This was done for each cluster, and then the overall \texttt{zcor} matrix was made up of the resulting adjusted cluster matrices.
+The function \texttt{geeglm()} can account for missing (\texttt{NA}) data values in the response or covariate columns. However, both the integrative correlation matrix and the \texttt{zcor} matrix must be adjusted to remove the corresponding entries. For each cluster $k = 1, \ldots , N$, we make this adjustment by finding the expected OTU/repeated measure/time combinations that are missing in the given cluster, replacing all entries of the corresponding row and column of the working integrative correlation matrix with a replacement dummy value (e.g. -2). The corresponding $\texttt{zcor}_k$ matrix was created using the upper triangular values of $R_k$, and then filtered to remove all rows that contained the dummy value. This was done for each cluster, and then the overall \texttt{zcor} matrix was made up of the resulting adjusted cluster matrices.
 
 
 \subsection{Unlabeled taxa values}
@@ -280,15 +291,15 @@ $$\begin{array}{c c c c | c }
 \end{singlespace}
 
 
-To calculate the taxonomic tree when there is missing taxa levels, we essentially grow down the tree. If an OTU is missing a label for a certain level, it will be given a placeholder label of the lowest taxa. If two or more OTUs share the same label at the lowest level, they will be consolidated into one observation.
+To calculate the taxonomic tree when there is missing taxa levels, we essentially grow down the tree. If an OTU is missing a label for a certain level, it will be given a placeholder label of the lowest taxon. If two or more OTUs share the same label at the lowest level, they will be consolidated into one observation.
 
-In the above example, there are three distinct taxa labels at the lowest level (family). Thus $OTU_3$ and $OTU_4$ will be collapsed into one observation, and there will be two correlation parameters; the correlation between $OTU_1$ and $OTU_2$ and that between $OTU_1$ or $OTU_2$ and $OTU_3 + OTU_4$
+In the above example, there are three distinct taxa labels at the lowest level (family). Thus $OTU_3$ and $OTU_4$ will be collapsed into one observation, and there will be two correlation parameters; the correlation between $OTU_1$ and $OTU_2$ and that between $OTU_1$ or $OTU_2$ and $OTU_3 + OTU_4$.
 
-\subsection{Generating the taxa correlation from microbiome data}
+\subsection{Generating taxonomic correlation from microbiome data}
 
-A detailed tree showing the hierarchy of taxa labels is not generally provided with OTU data. Instead, there is often a column listing the given taxa labels. To specify the working correlation matrix, a tree, or equivalently the number of taxa in each grouping, must be recreated from the list of labels.
+A detailed tree showing the hierarchy of taxonomic labels is not generally provided with OTU data. Instead, there is often a column listing the given taxonomic labels. To specify the working correlation matrix, a tree, or equivalently the number of taxa in each grouping, must be recreated from the list of labels.
 
-This is done iteratively in the function \texttt{tax2cor}. This function first grows down the tree to fill in missing taxa labels, and then adds up non-unique lowest labels for a chosen lowest level. For this project, OTUs were aggregated to the genus level. Then, starting at the top taxa level (Kingdom), the number of OTUs in each taxa-level group is counted. This relies on sorting the taxa alphabetically, grouping successively, so clusters in the dataset should share this same ordering. This results in a list detailing the counts of OTUs belonging to each level. This list can be used in to generate the taxonomic correlation working matrix.
+This is done iteratively in the function \texttt{tax2cor}. This function first grows down the tree to fill in missing taxa labels, and then adds up non-unique lowest labels for a chosen lowest level. For this project, OTUs were aggregated to the genus level. Then, starting at the top taxa level (Kingdom), the number of OTUs in each taxa-level group is counted. This relies on sorting the taxa alphabetically, grouping successively, so clusters in the dataset should share this same ordering. This results in a list detailing the counts of OTUs belonging to each level. This list can be used to generate the taxonomic correlation working matrix.
 
 % INSERT EXAMPLE?
 
@@ -313,11 +324,11 @@ $$ K \binom{tN}{2} \times a < 2^{31}-1$$
 Consider the case when we have 200 subjects, and 200 OTUs measured, on 4 time points. Suppose there are 50 distinct correlation arising from the integrative correlation matrix. The \texttt{zcor} matrix in this seemingly small example would have $3.2 \times 10^9 > 2^{31}-1$ entries, and would exceed this limit.
 
 Note that this is only the very first initial step of initializing the working correlation matrix. The computation involved in actually solving the GEE for situations where the working correlation matrix becomes large is limited by memory of the computer performing the calculation. The full dataset from the American Gut Project will result in a \texttt{zcor} matrix too large to even initialize.
-
+% fill in actual numbers
 
 \subsubsection{MTLC on limited subset of AGP}
 
-A very limited subset of the samples in the American Gut Project was used to fit the MTLC model. Selecting only 94 of the original 4827 samples, results in a corresponding 162 distinct OTUs. Constructing the taxonomic tree, and the integrative correlation matrix (only based from taxonomic information - no longitudinal measures here) results in 54 distinct taxonomic correlations to estimate. In this limited setting, the dimension of \texttt{zcor} for the presence/absence model part will be (FILL IN), and the dimension of \texttt{zcor} for the abundance model will be $247844 \times 54$. Fitting both models is time consuming and requires overnight computation.
+A very limited subset of the samples in the American Gut Project was used to fit the MTLC model. Selecting only 94 of the original 4827 samples, results in a corresponding 162 distinct OTUs. Constructing the taxonomic tree, and the integrative correlation matrix (only based from taxonomic information - no longitudinal measures here) results in 54 distinct taxonomic correlations to estimate. In this limited setting, the dimension of \texttt{zcor} for the presence/absence model part will be $1225852 \times 54$, and the dimension of \texttt{zcor} for the abundance model will be $247844 \times 54$. Fitting both models is time consuming and requires overnight computation.
 
 
 \section{Discussion and Conclusion}
