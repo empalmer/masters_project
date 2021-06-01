@@ -74,8 +74,6 @@ tax2cor <- function(data, taxa_levels = c("k","p","c","o","f","g","s")){
 
 
 
-
-
 #' Sort by the levels, alphabetically 
 #' This should be the final order of the data 
 #'
@@ -107,7 +105,7 @@ sort_by_taxa <- function(data,taxa_levels = c("k","p","c","o","f","g","s")) {
 #' @export
 #'
 #' @examples
-sum_at_taxa_level <- function(data, taxa_level = "s", ...) {
+sum_at_taxa_level <- function(data, taxa_level = "g", ...) {
     summed_data <- data %>% 
         group_by_at(taxa_level) %>% 
         summarize_if(is.numeric,sum)

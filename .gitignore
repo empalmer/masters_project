@@ -47,3 +47,5 @@ vignettes/*.pdf
 
 /Data/American_Gut/*
 /Data/temp_data/zcor_100_samples.rds
+/Data/temp_data/zcor_logistic_50.rds
+/Data/temp_data/zcor_ra_50.rds
