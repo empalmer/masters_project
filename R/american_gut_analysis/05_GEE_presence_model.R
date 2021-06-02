@@ -4,71 +4,49 @@
 library(tidyverse)
 
 ## Load in the "small" data 
-## There are 94 samples and 162 different OTUs/taxa
-## Will have 94*162 rows 
-filtered_data <- read_rds(here::here("Data","temp_data","prevalence100.rds"))
+## There are 100 samples and 164 different OTUs/taxa
+## Will have 100*164 rows 
+#filtered_data <- read_rds(here::here("Data","temp_data","prevalence100.rds"))
+filtered_data <- read_rds(here::here("Data","temp_data","antibiotic_data_100.rds"))
+dim(filtered_data)
 
-# load in correlation matrix for geeM package
-# has dimension 162x162
-r_mat <- read_rds(here::here("Data","temp_data","R_100.rds"))
-# Load in the zcor for geepack package
-# has dimension 94*choose(162,2) x 54
-# too large to store, calculate below
-#zcor <- read_rds(here::here("Data","temp_data","zcor_100_samples.rds"))
+# load in the R and zcor matrices for 1 sample 
+r_zcor <- read_rds(here::here("Data","temp_data","r_zcor_antibiotic_100.rds"))
 
+R1 <- r_zcor[[1]]
+zcor1 <- r_zcor[[2]]
 
-max_R <- max(r_mat) - 1
-n <- 94
-N <- nrow(r_mat)
-zcor = matrix(nrow = n*choose(N , 2), ncol = max_R )
+# Calculate the zcor for all samples 
+# has dimension 100*choose(164,2) x 55
+# number of correlations
+(max_R <- max(R1) - 1)
+#number of samples
+n <- 100
+# number of OTUs
+N <- nrow(R1)
+#create zcor matrix for all samples. 
+zcor = matrix(nrow = n*choose(N , 2), ncol = max_R)
 for (i in 1:max_R ) {
-    zcor[, i] = rep(as.numeric(r_mat[lower.tri(r_mat)] == i + 1),n)
+    zcor[, i] = rep(as.numeric(R1[lower.tri(R1)] == i + 1),n)
 }
 dim(zcor)
 
 
 
 
-
-# Some transformations to make the code work 
-# geepack needs sample_id as a factor, otherwise it tries to convert to 
-# numeric and runs into problems. 
-# Age should be treated as numeric, as it is originally a character
-filtered_data <- filtered_data %>% 
-    mutate(sample_id2 = factor(sample_id), 
-           AGE = as.numeric(AGE), 
-           presence0 = ifelse(presence,1,0))
-
-
 library(geepack)
-# Try the other "simpler" correlation structures built in to geepack
-# These all will run in a reasonable amount of time. (< 1m) 
-#geepack_fit_1 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
-#                      corstr = "independence")
-#geepack_fit_2 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
-#                        corstr = "exchangeable")
-#geepack_fit_3 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
-                        corstr = "ar1")
-#summary(geepack_fit_1)
-
-# Try the unstructured correlation structure, which should be more complicated than userdefined 
-#geepack_fit_4 <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, id = sample_id2, 
-#                        corstr = "unstructured")
-# If we have a 'userdefined' correlation structure from zcor
-# At least, it will not run for me
-#geepack_fit_zcor <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, 
-#                      corstr = "userdefined", zcor = zcor, id = sample_id2)
-
-
 # If we have a 'userdefined' correlation structure from zcor
 # Time and save model output 
 start_time <- proc.time()
-geepack_fit_zcor <- geeglm(presence ~ AGE, family = binomial, data = filtered_data, 
-                           corstr = "userdefined", zcor = zcor, id = sample_id2)
-end_time <- proc.time()
-diff <- end_time - start_time
-write_rds(diff, here::here("R","american_gut_analysis","logistic_age_time.rds"))
-write_rds(geepack_fit_zcor,here::here("R","american_gut_analysis","logistic_age_gee_mod.rds") )
+# Model fit 
+geepack_fit_zcor <- geeglm(presence ~ use_antibiotic_past_year, family = binomial, data = filtered_data, 
+                           corstr = "userdefined", zcor = zcor, id = sample_id)
+
+diff <- proc.time() - start_time
+
+# Save outputs
+write_rds(diff, here::here("R","american_gut_analysis","logistic_antibiotic_time.rds"))
+write_rds(geepack_fit_zcor,here::here("R","american_gut_analysis","logistic_antibiotic_gee_mod.rds") )
 
 
 

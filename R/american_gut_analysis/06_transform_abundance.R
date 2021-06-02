@@ -1,12 +1,27 @@
 library(tidyverse)
 # Load data with 100 samples
-filtered_data <- read_rds(here::here("Data","American_Gut","prevalence100.rds"))
+#filtered_data <- read_rds(here::here("Data","American_Gut","prevalence100.rds"))
 # load in correlation matrix for geeM package
-# has dimension 162x162
-r_mat <- read_rds(here::here("Data","American_Gut","R_100.rds"))
+# has dimension 164x164
+#r_mat <- read_rds(here::here("Data","American_Gut","R_100.rds"))
 # Load in the zcor for geepack package
 # has dimension 94*choose(162,2) x 53
-zcor <- read_rds(here::here("Data","American_Gut","zcor_100_samples.rds"))
+#zcor <- read_rds(here::here("Data","American_Gut","zcor_100_samples.rds"))
+
+## Load in the "small" data 
+## There are 100 samples and 164 different OTUs/taxa
+## Will have 100*164 rows 
+#filtered_data <- read_rds(here::here("Data","temp_data","prevalence100.rds"))
+filtered_data <- read_rds(here::here("Data","temp_data","antibiotic_data_100.rds"))
+dim(filtered_data)
+
+# load in the R and zcor matrices for 1 sample 
+r_zcor <- read_rds(here::here("Data","temp_data","r_zcor_antibiotic_100.rds"))
+
+R1 <- r_zcor[[1]]
+zcor1 <- r_zcor[[2]]
+
+
 sampling_depth <- read_rds(here::here("Data","American_Gut","sampling_depth.rds"))
 
 
@@ -19,11 +34,13 @@ sampling_depth <- read_rds(here::here("Data","American_Gut","sampling_depth.rds"
 # -log10 transform RA
 joined <- filtered_data %>% 
     left_join(sampling_depth) %>% 
-    mutate(age_present = ifelse(OTU_value > 0, AGE, NA),
+    mutate(nonzero_antibiotic = ifelse(OTU_value > 0, use_antibiotic_past_year, NA),
            ra = ifelse(OTU_value > 0, OTU_value/sampling_depth, NA)) %>% 
-    mutate(log_ra = -log10(ra))
+    mutate(log_ra = -log10(ra), 
+           sample_id = factor(sample_id))
+dim(joined)
 
-write_rds(joined, here::here("Data","temp_data","log_ra_100.rds"))
+write_rds(joined, here::here("Data","temp_data","log_ra_antibiotic_100.rds"))
 
 
 # not really normally distributed. Maybe because I removed low-prevalence OTUs earlier?

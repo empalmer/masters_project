@@ -7,7 +7,9 @@
 # OTUs filtered to be present in > 10% of samples 
 # Summed to the genus level 
 
-filtered_data <- read_rds(here::here("Data","American_Gut","genus_threshold_10.rds"))
+#filtered_data <- read_rds(here::here("Data","American_Gut","genus_threshold_10.rds"))
+
+filtered_data <- read_rds(here::here("Data","American_Gut","antibiotic_otu_table_100.rds"))
 
 
 ## get the taxa list for calculating the correlation matrix. 
@@ -22,5 +24,9 @@ dim <- map(taxa_count_list,2)
 dim
 
 
-# Calculate the R matrix. 
-# Currently, see 03_manual_R_calculation
+
+source(here::here("GEE_Chen2020","cor2zcor.r"))
+
+R_zcor <- cor2zcor(n = 1, dim = dim, par = 1)
+
+write_rds(R_zcor, here::here("Data","temp_data","r_zcor_antibiotic_100.rds")) 

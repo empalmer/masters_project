@@ -11,9 +11,21 @@ source(here::here("GEE_Chen2020","cor2zcor.r"))
 #filtered_data <- read_rds(here::here("Data","American_Gut","genus_threshold_10.rds"))
 filtered_data <- read_rds(here::here("Data","American_Gut","samples100.rds"))
 
+
+## Alternate get taxa list 
+taxa_list <- list("k",c("k","p"),c("k","p","c"),c("k","p","c","o"),
+                  c("k","p","c","o","f"),c("k","p","c","o","f","g"))
+
+all <- map(taxa_list, ~taxa_group_tally(filtered_data,.x))
+dim1 <- map(all, "n")
+dim1
+
+
 ## get taxa list ---- 
 taxa_count_list <- tax2cor(filtered_data, taxa_levels = c("k","p","c","o","f","g"))
 taxa_count_list
+
+# equivalent results 
 
 
 #extract just the counts - the dimension list to give to the cor2zcor fxn. 
