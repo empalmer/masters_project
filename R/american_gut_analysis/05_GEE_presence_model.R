@@ -57,19 +57,3 @@ write_rds(geepack_fit_zcor,here::here("R","american_gut_analysis","logistic_anti
 
 
 
-
-
-
-# Next try the geeM package, which uses the original correlation (sqaure)
-# matrix for userdefined 
-# Seems a LOT slower. Won't even run with independence structure...
-# (or takes > 5 min to run, I've always stopped it after 5 min)
-#library(geeM)
-
-#geem_fit <- geem(presence ~ AGE, data = filtered_data, family = binomial, id = sample_id,     corstr = "independence")
-
-# Since it takes so long for independence, I havent tried the userdefined option
-#geem(presence ~ AGE, data = filtered_data, family = binomial, id = sample_id,
-#     corstr = "userdefined", corr.mat = r_mat)
-
-
