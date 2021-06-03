@@ -26,20 +26,13 @@ library(geepack)
 # takes MANY HOURS 
 start_time <- proc.time()
 geepack_fit_zcor <- geeglm(log_ra ~ use_antibiotic_past_year, family = gaussian,
-                           data = log_ra, id = sample_id,
+                           data = log_ra, id = sample_id, waves = OTU_name,
                            corstr = "userdefined", zcor = zcor_reduced)
 
 diff <- proc.time() - start_time
-write_rds(diff, here::here("R","american_gut_analysis","normal_age_time.rds"))
-write_rds(geepack_fit_zcor,here::here("R","american_gut_analysis","normal_age_gee_mod.rds") )
-
-
-
-
-
-
-
-
+write_rds(diff, here::here("R","american_gut_analysis","normal_antibiotic_time2.rds"))
+write_rds(geepack_fit_zcor,here::here("R","american_gut_analysis","normal_antibiotic_mod_wav.rds") )
+# Graphical display 
 
 
 

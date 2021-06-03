@@ -49,3 +49,8 @@ vignettes/*.pdf
 /Data/temp_data/zcor_100_samples.rds
 /Data/temp_data/zcor_logistic_50.rds
 /Data/temp_data/zcor_ra_50.rds
+
+
+# large model outputs 
+/R/american_gut_analysis/normal_age_gee_mod.rds
+/R/american_gut_analysis/normal_antibiotic_mod.rds
