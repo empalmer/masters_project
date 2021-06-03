@@ -334,23 +334,13 @@ To get results from this model, we finally decided to randomly sample individual
 
 This model was fit with antibiotic usage as the single covariate, as we might expect antibiotic usage to have a significant affect on the microbiome. The antibiotic usage variable is one if the subject had used antibiotics in the past year and zero otherwise.
 
-\begin{singlespace}
-(CURRENTLY MODEL OUTPUT FOR )
-The below table provides
-alpha:1  alpha:2  alpha:3  alpha:4  alpha:5  alpha:6  alpha:7  alpha:8  alpha:9 alpha:10
- 0.47978  0.11899  0.11499  0.25968 -0.49477 -0.25093 -0.01562  0.59678  0.23822 -0.11781
-alpha:11 alpha:12 alpha:13 alpha:14 alpha:15 alpha:16 alpha:17 alpha:18 alpha:19 alpha:20
--0.05423  0.64398 -0.21241  0.03368  0.47960  0.21153 -0.12241  1.42694 -0.07299  0.04160
-alpha:21 alpha:22 alpha:23 alpha:24 alpha:25 alpha:26 alpha:27 alpha:28 alpha:29 alpha:30
- 0.10331 -0.57241  0.33020  0.31041  0.59379  0.67783 -0.05741  0.13765  0.18970  1.16835
-alpha:31 alpha:32 alpha:33 alpha:34 alpha:35 alpha:36 alpha:37 alpha:38 alpha:39 alpha:40
- 0.38919  0.96050  0.31290  0.24766  0.13246  0.14325  0.20886  0.00399  0.09392  0.21599
-alpha:41 alpha:42 alpha:43 alpha:44 alpha:45 alpha:46 alpha:47 alpha:48 alpha:49 alpha:50
- 0.86016 -0.05488  0.12825 -0.28371 -0.25629  0.21501  0.20578  0.13247 -0.20457  0.02165
-alpha:51 alpha:52 alpha:53 alpha:54
--0.02987  0.12339  0.13206  0.01102
-\end{singlespace}
 
+
+
+
+(CURRENTLY MODEL OUTPUT FOR old model)
+
+\includegraphics[width = .8\textwidth]{initial_alpha.png}
 
 In particular, the first correlation represents the correlation between FILL IN THIS INTERPRETATION and .
 Notice the positive and negatives...
@@ -370,7 +360,7 @@ Additionally, future work could find a way to incorporate phylogenetic informati
 
 This MTLC model also imposes a rather simplistic right hand side of the regression equation. It assumes there will only be one regression parameter for each covariate used, giving the impact on the microbiome as a whole. However this could potentially be a restrictive assumption. We might want use this taxonomic correlation idea and extend to models that incorporate time-varying coefficients for the cases when we have longitudinal data.
 
-
+ 
 
 
 

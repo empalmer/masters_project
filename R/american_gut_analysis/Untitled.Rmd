@@ -1,0 +1,33 @@
+---
+title: "alpha formatting"
+author: "Emily Palmer"
+date: "6/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+normal_age_gee_mod <- readRDS("~/Desktop/masters_project/R/american_gut_analysis/normal_age_gee_mod.rds")
+#install.packages("kableExtra")
+library(kableExtra)
+library(tidyverse)
+library(geepack)
+```
+
+## Formatting
+
+```{r cars}
+data <- normal_age_gee_mod$geese[[2]] 
+data
+unname(data)
+#data
+#t(data)
+#df <- data.frame(alphas = names(data), cor = data)
+#df
+#knitr::kable(t(data), "simple")
+
+kbl(unname(data)) 
+#%>%kable_styling(latex_options = "striped",font_size = 7)
+```
+
+
