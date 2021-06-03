@@ -211,9 +211,9 @@ $$R = \begin{pmatrix}
         8 & 8 & 6 & 10 & 10 & 3 & 3 & 1 & 5 & 5 \\
         10 & 10 & 10 & 6 & 9 & 5 & 5 & 5 & 1 & 4  \\
         10 & 10 & 10  & 9 & 6  & 5 & 5 & 5 & 4 & 1
-  \end{pmatrix}$$
+  \end{pmatrix},$$
 \end{singlespace}
-Where each distinct integer represents a unique correlation. We can write $R = R(\alpha)$, where $\alpha = 1:10$. For instance, correlation 6 represents the correlation between $OTU_1$ and $OTU_2$ between the two time points sampled.
+where each distinct integer represents a unique correlation. We can write $R = R(\alpha)$, where $\alpha = 1:10$. For instance, correlation 6 represents the correlation between $OTU_1$ and $OTU_2$ between the two time points sampled.
 
 \subsubsection{Two-part GEE model}
 
@@ -316,8 +316,7 @@ This is done iteratively in the function \texttt{tax2cor} written for this analy
 
 When using \texttt{geeglm}, the user-defined working correlation structure is stored as a Matrix data structure. In R, matrices are indexed using integers, and the maximum length of a vector is $2^{31}-1$. This means that the total number entries in the \texttt{zcor} matrix cannot exceed this limit.
 
-If we have $K$ individuals, measured on $t$ time points for $N$ individuals, and $\alpha$ has length $a$, this must satisfy the following inequality.
-$$ K \binom{tN}{2} \times a < 2^{31}-1$$
+If we have $K$ individuals, measured on $t$ time points for $N$ OTUs, and $\alpha$ has length $a$, this must satisfy the inequality $K \binom{tN}{2} \times a < 2^{31}-1$.
 
 Consider the case when we have 200 subjects, and 200 OTUs measured, on 4 time points. Suppose there are 50 distinct correlation arising from the integrative correlation matrix. The \texttt{zcor} matrix in this seemingly small example would have $3.2 \times 10^9 > 2^{31}-1$ entries, and would exceed this limit.
 
@@ -330,21 +329,33 @@ Note that this is only the very first initial step of initializing the working c
 Several attempts were made to filter the American Gut project data based on biological criteria. Even these attempts resulted in either correlation matrices too large to even initialize, issues with running out of computer memory, or computation times that lasted several days without completion.
 
 % A very limited subset of the samples in the American Gut Project was used to fit the MTLC model.
-To get results from this model, we finally decided to randomly sample individuals. Selecting only 100 of the original 4827 samples, results in a corresponding 162 distinct OTUs. Constructing the taxonomic tree, and the integrative correlation matrix (only based from taxonomic information - no longitudinal measures here) results in 54 distinct taxonomic correlations to estimate. In this limited setting, the dimension of \texttt{zcor} for the presence/absence model part will be $1225852 \times 54$, and the dimension of \texttt{zcor} for the abundance model will be $247844 \times 54$. Fitting both model parts is time consuming and requires overnight computation. The relative abundance normal model takes (FILL IN) to run, and the presence/absence logistic model takes over (FILL IN) to run, and we are currently awaiting final results on this part.
+To get results from this model, we finally decided to randomly sample individuals. Selecting only 100 of the original 4827 samples, results in a corresponding 164 distinct OTUs. Constructing the taxonomic tree, and the integrative correlation matrix (only based from taxonomic information - no longitudinal measures here) results in 54 distinct taxonomic correlations to estimate. In this limited setting, the dimension of \texttt{zcor} for the presence/absence model part will be $1336600 \times 55$, and the dimension of \texttt{zcor} for the abundance model will be $258234 \times 55$. Fitting both model parts is time consuming and requires overnight computation. The relative abundance normal model takes over three hours to run, and we are currently awaiting final results on the presence/absence logistic model.
 
-This model was fit with antibiotic usage as the single covariate, as we might expect antibiotic usage to have a significant affect on the microbiome. The antibiotic usage variable is one if the subject had used antibiotics in the past year and zero otherwise.
+This model was fit with antibiotic usage as the single covariate, as we might expect antibiotic usage to have a significant affect on the microbiome. The antibiotic usage variable is one if the subject had used antibiotics in the past year and zero otherwise. The relative abundance model found no significant effect of antibiotic use in the past year on positive log-transformed relative abundance of OTUs, $\beta^{(+)} = 0.068, p = 0.35$.
+
+%Since GEEs estimate average population effects, and the response is relative abundance, which should sum to 1. The interpretation of a population average effect is difficult.
+
+% The below heat map shows the estimated correlations. Notice the majority of the correlations are positive. For example, the correlation block at the very top left represent correlation between OTUs with order
+% \textit{Actinomycetales}, but different families.  Unsurprisingly, correlations closest to the diagonal are higher, which represent correlations between OTUs closer on the taxonomic tree.
+%
+% \begin{singlespace}
+%   \includegraphics[width = .35\textwidth]{normal_corr.png}
+% \end{singlespace}
 
 
+\hspace*{-\parindent}%
+\begin{minipage}{.6\textwidth}
+  The following heat map shows the estimated correlations. Notice the majority of the correlations are positive. For example, the correlation block at the very top left represent correlation between OTUs with order \textit{Actinomycetales}, but different families.  Unsurprisingly, correlations closest to the diagonal are higher, which represent correlations between OTUs closer on the taxonomic tree.
+\end{minipage}%
+\begin{minipage}{0.4\textwidth}
+    \centering
+    \includegraphics[width = .8\textwidth]{normal_corr.png}
+\end{minipage}
+
+However, it is concerning to see two estimated correlations above one. It is unclear if this is an error in \texttt{geepack} code or somehow from unusual artifacts in the data. 
 
 
-
-(CURRENTLY MODEL OUTPUT FOR old model)
-
-\includegraphics[width = .8\textwidth]{initial_alpha.png}
-
-In particular, the first correlation represents the correlation between FILL IN THIS INTERPRETATION and .
-Notice the positive and negatives...
-
+% SOME OF THESE ARE ABOVE 1!!!
 
 \section{Discussion and Conclusion}
 
@@ -360,7 +371,7 @@ Additionally, future work could find a way to incorporate phylogenetic informati
 
 This MTLC model also imposes a rather simplistic right hand side of the regression equation. It assumes there will only be one regression parameter for each covariate used, giving the impact on the microbiome as a whole. However this could potentially be a restrictive assumption. We might want use this taxonomic correlation idea and extend to models that incorporate time-varying coefficients for the cases when we have longitudinal data.
 
- 
+
 
 
 
