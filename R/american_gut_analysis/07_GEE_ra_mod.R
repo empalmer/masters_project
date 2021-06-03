@@ -7,6 +7,9 @@ source(here::here("R","american_gut_analysis","01_taxonomy_to_correlation_list.R
 # -log10 transformed relative abundance
 log_ra <- read_rds(here::here("Data","temp_data","log_ra_antibiotic_100.rds"))
 
+log_ra <- log_ra %>% 
+    mutate(OTU_name = factor(OTU_name))
+
 # R and zcor for 1 sample:
 r_zcor <- read_rds(here::here("Data","temp_data","r_zcor_antibiotic_100.rds"))
 R1 <- r_zcor[[1]]
@@ -26,7 +29,7 @@ library(geepack)
 # takes MANY HOURS 
 start_time <- proc.time()
 geepack_fit_zcor <- geeglm(log_ra ~ use_antibiotic_past_year, family = gaussian,
-                           data = log_ra, id = sample_id, waves = OTU_name,
+                           data = log_ra, id = sample_id,
                            corstr = "userdefined", zcor = zcor_reduced)
 
 diff <- proc.time() - start_time
