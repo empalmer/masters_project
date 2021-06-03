@@ -215,7 +215,7 @@ $$R = \begin{pmatrix}
 \end{singlespace}
 where each distinct integer represents a unique correlation. We can write $R = R(\alpha)$, where $\alpha = 1:10$. For instance, correlation 6 represents the correlation between $OTU_1$ and $OTU_2$ between the two time points sampled.
 
-\subsubsection{Two-part GEE model}
+\subsection{Two-part GEE model}
 
 The association between OTUs and covariates is modeled in two parts. Since OTU data contains excessive zeros, the presence/absence of an OTU ($y_{kj}^{(0)}$)is modeled separately from the logarithm of the non-zero relative abundance of the OTU ($y_{kj}^{(+)}$). We assume each OTU observation $y_{kj}$ follows a mixture of Bernoulli and log-normal distributions. $P(y_{jk}^{(0)} = 1) = \mu_{kj}^{(0)}$, and $y_{kj}^{(+)} \sim N(\mu_{kj}^{(+)}, \sigma^2)$
 
@@ -326,12 +326,12 @@ Note that this is only the very first initial step of initializing the working c
 %\subsubsection{MTLC on limited subset of AGP}
 \subsection{Results on a limited subset of the American Gut project}
 
-Several attempts were made to filter the American Gut project data based on biological criteria. Even these attempts resulted in either correlation matrices too large to even initialize, issues with running out of computer memory, or computation times that lasted several days without completion.
+Several attempts were made to filter the American Gut project data based on biological criteria. Even these attempts resulted in either correlation matrices too large to initialize, issues with running out of computer memory, or computation times that lasted several days without completion.
 
 % A very limited subset of the samples in the American Gut Project was used to fit the MTLC model.
 To get results from this model, we finally decided to randomly sample individuals. Selecting only 100 of the original 4827 samples, results in a corresponding 164 distinct OTUs. Constructing the taxonomic tree, and the integrative correlation matrix (only based from taxonomic information - no longitudinal measures here) results in 54 distinct taxonomic correlations to estimate. In this limited setting, the dimension of \texttt{zcor} for the presence/absence model part will be $1336600 \times 55$, and the dimension of \texttt{zcor} for the abundance model will be $258234 \times 55$. Fitting both model parts is time consuming and requires overnight computation. The relative abundance normal model takes over three hours to run, and we are currently awaiting final results on the presence/absence logistic model.
 
-This model was fit with antibiotic usage as the single covariate, as we might expect antibiotic usage to have a significant affect on the microbiome. The antibiotic usage variable is one if the subject had used antibiotics in the past year and zero otherwise. The relative abundance model found no significant effect of antibiotic use in the past year on positive log-transformed relative abundance of OTUs, $\beta^{(+)} = 0.068, p = 0.35$.
+This model was fit with antibiotic usage as the single covariate, as we might expect antibiotic usage to have a significant effect on the microbiome. The antibiotic usage variable is one if the subject had used antibiotics in the past year and zero otherwise. The relative abundance model found no significant effect of antibiotic use in the past year on positive log-transformed relative abundance of OTUs, $\beta^{(+)} = 0.068, p = 0.35$.
 
 %Since GEEs estimate average population effects, and the response is relative abundance, which should sum to 1. The interpretation of a population average effect is difficult.
 
@@ -352,7 +352,7 @@ This model was fit with antibiotic usage as the single covariate, as we might ex
     \includegraphics[width = .8\textwidth]{normal_corr.png}
 \end{minipage}
 
-However, it is concerning to see two estimated correlations above one. It is unclear if this is an error in \texttt{geepack} code or somehow from unusual artifacts in the data. 
+However, it is concerning to see two estimated correlations above one. It is unclear if this is an error in \texttt{geepack} code or somehow from unusual artifacts in the data.
 
 
 % SOME OF THESE ARE ABOVE 1!!!
@@ -369,9 +369,13 @@ The performance of this model should also be re-evaluated in cases when we have 
 
 Additionally, future work could find a way to incorporate phylogenetic information instead of taxonomic information. The phylogenetic tree contains an estimate of how close OTUs are evolutionarily, which is not directly present in taxonomic trees. This might generate a correlation structure closer to the true correlations between OTUs.
 
-This MTLC model also imposes a rather simplistic right hand side of the regression equation. It assumes there will only be one regression parameter for each covariate used, giving the impact on the microbiome as a whole. However this could potentially be a restrictive assumption. We might want use this taxonomic correlation idea and extend to models that incorporate time-varying coefficients for the cases when we have longitudinal data.
+% This MTLC model also imposes a rather simplistic right hand side of the regression equation. It assumes there will only be one regression parameter for each covariate used, giving the impact on the microbiome as a whole. However this could potentially be a restrictive assumption. We might want use this taxonomic correlation idea and extend to models that incorporate time-varying coefficients for the cases when we have longitudinal data.
+
+This MTLC model also imposes a rather simplistic right hand side of the regression equation. It assumes there will only be one regression parameter for each covariate used, giving the impact on the microbiome as a whole. This is likely too restrictive an assumption, especially in the relative abundance model. Relative abundance is calculated in each sample based on the sampling depth, and the sum of the relative abundances in a sample is one. GEEs give a population averaged effect, in this case, the average of the relative abundances in the sample. But how do we interpret a population average effect over relative abundance?
+Even if we have a true significant effect of antibiotics on a subset of the microbiome, we would not see that significance in the overall model, and we can't tell which subsets of the microbiome are impacted with this model. Thus, finding a way to utilize this idea of taxonomic correlation, on a model that can predict effects for different OTUs, and additionally longitudinal repeated measures, will likely be necessary to extend this model to more specific scientific questions.
 
 
+% We might want use this taxonomic correlation idea and extend to models that incorporate time-varying coefficients for the cases when we have longitudinal data.
 
 
 
