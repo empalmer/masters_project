@@ -15,13 +15,19 @@ source(here::here("GEE_Chen2020","cor2zcor.r"))
 # Fecal site only 
 # Has data for antibiotic use 
 # randomly select 100 samples
+filtered_data <- read_rds(here::here("Data","American_Gut","antibiotic_otu_table_all_samples.rds"))
+#filtered_data <- read_rds(here::here("Data","American_Gut","antibiotic_otu_table_100.rds"))
 
-filtered_data <- read_rds(here::here("Data","American_Gut","antibiotic_otu_table_100.rds"))
+
 class_filtered_data <- filtered_data %>% 
     ungroup() %>% 
     select(-k,-p)
 
-log_ra_full <- read_rds(here::here("Data","temp_data","log_ra_antibiotic_100.rds"))
+
+log_ra_full <- read_rds(here::here("Data","American_Gut","log_ra_antibiotic_all_samples.rds"))
+#log_ra_full <- read_rds(here::here("Data","temp_data","log_ra_antibiotic_100.rds"))
+
+
 log_ra_full <- log_ra_full %>% 
     mutate(OTU_name = factor(OTU_name))
 
@@ -97,21 +103,21 @@ fit_ra_on_one <- function(class){
 
 
 
-classes_over_1 <- class_taxa_counts %>% 
+classes_over_1_ra <- class_taxa_counts %>% 
     filter(n > 1) %>% 
     pull(c)
-classes_over_1
-classes_equal_1 <-class_taxa_counts %>% 
+
+classes_equal_1_ra <-class_taxa_counts %>% 
     filter(n == 1) %>% 
     pull(c)
-classes_equal_1
+
 
 fit_ra_on_class("c__Coriobacteriia")
 class <- "c__Coriobacteriia"
 fit_ra_on_class("c__Actinobacteria")
 
-ra_loop_through_classes_over_1 <- map(classes_over_1, fit_ra_on_class)
-ra_loop_through_classes_equal_1 <- map(classes_equal_1, fit_ra_on_one)
+ra_loop_through_classes_over_1 <- map(classes_over_1_ra, fit_ra_on_class)
+ra_loop_through_classes_equal_1 <- map(classes_equal_1_ra, fit_ra_on_one)
 
 
 
@@ -123,8 +129,24 @@ get_p_value <- function(summary){
 
 all_results_ra <- c(ra_loop_through_classes_over_1,ra_loop_through_classes_equal_1)
 
+write_rds(all_results_ra, here::here("R","american_gut_analysis","class_loop_ra.rds"))
+
+
 p_vals_ra <- map_dbl(all_results_ra, get_p_value)
 p_vals_ra
 
 # No significant results :( 
 sum(p.adjust(p_vals_ra, "fdr") < .05)
+
+p_vals_adjusted_ra <- p.adjust(p_vals_ra, "fdr")
+
+
+class_labels_ra <- c(classes_over_1_ra,classes_equal_1_ra)
+class_labels_ra[p_vals_adjusted_ra < .05]
+
+
+cauchy.test <- 0.5 * tan((0.5 - p_vals_adjusted_ra) * pi) + 0.5 * tan((0.5 - p_vals_adjusted) * pi)
+cauchy_adjust <- 1 - pcauchy(cauchy.test)
+
+
+class_labels_ra[cauchy_adjust< .05]

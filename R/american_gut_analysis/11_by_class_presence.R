@@ -158,13 +158,21 @@ get_p_value <- function(summary){
     return(p_val)
 }
 
+get_beta <- function(summary){
+    coefs <- summary$coefficients 
+    beta <- coefs$Estimate[2]
+    return(beta)
+}
+
 all_results <- c(loop_through_classes_over_1,loop_through_classes_equal_1)
 
-write_rds(all_results, here::here("R","american_gut_analysis","class_loop_presence.rds"))
+#write_rds(all_results, here::here("R","american_gut_analysis","class_loop_presence.rds"))
 
 p_vals <- map_dbl(all_results, get_p_value)
 p_vals
 
+betas <- map_dbl(all_results, get_beta)
+betas
 # Significant results!!! 
 sum(p.adjust(p_vals, "fdr") < .05)
 
@@ -172,5 +180,19 @@ p_vals_adjusted <- p.adjust(p_vals, "fdr")
 
 
 class_labels <- c(classes_over_1,classes_equal_1)
-class_labels[p_vals_adjusted < .05]
+significant <- class_labels[p_vals_adjusted < .05]
 
+
+class_taxa_counts %>% 
+    filter(c %in% significant)
+
+betas_sig <- betas[p_vals_adjusted < .05]
+
+all_results[p_vals_adjusted < .05]
+
+# significant 
+data.frame(significant, p = p_vals_adjusted[p_vals_adjusted < .05],betas_sig )
+
+
+# all 
+data.frame(class_labels, betas, p_vals_adjusted, p_vals_adjusted< .05,  betas_ra, p_vals_adjusted_ra,p_vals_adjusted_ra < .05, cauchy_adjust, cauchy_adjust < .05 )

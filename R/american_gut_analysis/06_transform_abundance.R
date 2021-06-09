@@ -12,7 +12,9 @@ library(tidyverse)
 ## There are 100 samples and 164 different OTUs/taxa
 ## Will have 100*164 rows 
 #filtered_data <- read_rds(here::here("Data","temp_data","prevalence100.rds"))
-filtered_data <- read_rds(here::here("Data","temp_data","antibiotic_data_100.rds"))
+#filtered_data <- read_rds(here::here("Data","temp_data","antibiotic_data_100.rds"))
+
+filtered_data  <- read_rds(here::here("Data","American_Gut","antibiotic_data_all_samples.rds"))
 dim(filtered_data)
 
 # load in the R and zcor matrices for 1 sample 
@@ -40,7 +42,7 @@ joined <- filtered_data %>%
            sample_id = factor(sample_id))
 dim(joined)
 
-write_rds(joined, here::here("Data","temp_data","log_ra_antibiotic_100.rds"))
+write_rds(joined, here::here("Data","American_Gut","log_ra_antibiotic_all_samples.rds"))
 
 
 # not really normally distributed. Maybe because I removed low-prevalence OTUs earlier?

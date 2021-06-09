@@ -55,3 +55,4 @@ vignettes/*.pdf
 /R/american_gut_analysis/normal_age_gee_mod.rds
 /R/american_gut_analysis/normal_antibiotic_mod.rds
 /R/american_gut_analysis/class_loop_presence.rds
+/R/american_gut_analysis/class_loop_ra.rds
