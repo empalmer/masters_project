@@ -4,10 +4,11 @@
 ## Currently it is rows = OTU, sample = Col 
 
 # Load data 
-#filtered_data <- read_rds(here::here("Data","American_Gut","genus_threshold_10.rds"))
 # try using only 100 samples to make it run... 
-#filtered_data <- read_rds(here::here("Data","American_Gut","samples100.rds"))
-filtered_data <- read_rds(here::here("Data","American_Gut","antibiotic_otu_table_100.rds"))
+#filtered_data <- read_rds(here::here("Data","American_Gut","antibiotic_otu_table_100.rds"))
+# or full dataset (with quality filtering)
+filtered_data <- read_rds(here::here("Data","American_Gut","antibiotic_otu_table_all_samples.rds"))
+
 
 ## Step 1 - transpose data 
 # Create lookup table 
@@ -75,6 +76,7 @@ gut_otu_response <- combined %>%
 
 
 ## convert into presence/absence 
+## might reconsider the antibiotic categorization. 
 gut_otu_repsonse_presence <- gut_otu_response %>% 
     mutate(presence = OTU_value > 0) %>% 
     mutate(sample_id = factor(sample_id), 
@@ -82,8 +84,8 @@ gut_otu_repsonse_presence <- gut_otu_response %>%
            use_antibiotic_past_year = ifelse(ANTIBIOTIC_SELECT == "Not in the last year", 0, 1))
 
 
-
-write_rds(gut_otu_repsonse_presence, here::here("Data","temp_data","antibiotic_data_100.rds"))
+write_rds(gut_otu_repsonse_presence, here::here("Data","American_Gut","antibiotic_data_all_samples.rds"))
+#write_rds(gut_otu_repsonse_presence, here::here("Data","temp_data","antibiotic_data_100.rds"))
 
 
 

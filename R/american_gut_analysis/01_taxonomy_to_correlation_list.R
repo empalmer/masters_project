@@ -158,10 +158,17 @@ filter_R_missing <- function(clust_index, data, max_size, zcor_1_full, R_full, v
     matrix_as_vector <- as.numeric(R_full[lower.tri(R_full)])
     
     # filter out the rows of the full zcor matrix where there is an NA value (-2)
+    #if(is.vector(zcor)){
+    #    zcor_reduced <- zcor_1_full[matrix_as_vector != -2 ]
+    #} else{
+    #    zcor_reduced <- zcor_1_full[matrix_as_vector != -2, ]
+    #}
     zcor_reduced <- zcor_1_full[matrix_as_vector != -2, ]
     
     return(zcor_reduced)
 }
+
+
 
 
 

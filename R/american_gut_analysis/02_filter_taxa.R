@@ -76,7 +76,7 @@ filtered_data <- gut_bacteria[, names(gut_bacteria) %in% c("#OTU ID", selected_s
 # fill blanks and sum at genus level
 source(here::here("R","american_gut_analysis","01_taxonomy_to_correlation_list.R"))
 # Load data ---- 
-filtered_data <- read_rds(here::here("Data","American_Gut","gut_bacteria_site.rds"))
+#filtered_data <- read_rds(here::here("Data","American_Gut","gut_bacteria_site.rds"))
 
 
 
@@ -121,6 +121,12 @@ dim(genus_thresholded)
 # Now only 165 OTUs included! (for 10% sparcity )
 
 
+## Save full dataset (ie not 100 randomly sampled )
+write_rds(genus_thresholded, here::here("Data","American_Gut","antibiotic_otu_table_all_samples.rds"))  
+
+
+
+
 
 #### Randomly select 100 samples to use 
 head(colnames(genus_thresholded))
@@ -140,16 +146,4 @@ write_rds(filtered_data_100_samples, here::here("Data","American_Gut","antibioti
 
 
 
-
-
-
-    
-# test to make sure my dplyr code is working
-# s1 <- c(0,0,0,0,0,0,0,0)
-# s2 <- c(1,0,0,0,0,0,0,0)
-# s3 <- c(1,1,1,1,0,0,0,0)
-# 
-# test_colsum <- data.frame(s1,s2,s3)
-# test_colsum %>% rowwise() %>%
-#     mutate(per = mean(c_across(s1:s3 ) > 0))
 
