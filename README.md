@@ -1,10 +1,6 @@
 # Masters Project at Oregon State University Spring 2021
 
-
-### Overview
-Following [this paper](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008108), I am using a tree-based correlation structure and integrating with longitudinal correlation structure for microbiome data. Using generalized estimating equations for model fitting.
-
-Abstract:
+### Abstract:
 The Microbiome Taxonomic Longitudinal Correlation model, a recent model for microbiome association studies that incorporates taxonomic hierarchy, was explored in detail and applied to data from the American Gut Project. Using real datasets, which are larger than the case study provided in the initial paper, and which include incomplete taxonomic labels not pre-organized into a taxonomic hierarchy, required code to be developed and workflows defined for intermediate steps. Datasets that include more than a small subset of OTUs run into computational limitations using this model.
 
 See my report ![here](https://github.com/empalmer/masters_project/blob/main/Report/report.pdf):
