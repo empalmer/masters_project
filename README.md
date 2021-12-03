@@ -7,8 +7,8 @@ Following [this paper](https://journals.plos.org/ploscompbiol/article?id=10.1371
 Abstract:
 The Microbiome Taxonomic Longitudinal Correlation, a recent model for microbiome association studies, was explored in detail and code was developed for application in general datasets beyond the case study provided in the initial paper. Applications of this method provided computational challenges when the scale of the data is beyond a small number of selected OTUs.
 
-### Current status:
-Writing report
+See my report ![here](https://github.com/empalmer/masters_project/blob/main/Report/report.pdf):
+
 
 ## About this repository
 
